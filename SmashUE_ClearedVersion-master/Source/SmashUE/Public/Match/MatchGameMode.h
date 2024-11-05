@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameStateBase.h"
+#include "GameFramework/GameModeBase.h"
 #include "MatchGameMode.generated.h"
 
 class AArenaPlayerStart;
@@ -11,7 +11,7 @@ class AArenaPlayerStart;
  * 
  */
 UCLASS()
-class SMASHUE_API AMatchGameMode : public AGameStateBase
+class SMASHUE_API AMatchGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 public:
