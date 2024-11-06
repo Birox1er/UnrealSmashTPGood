@@ -25,9 +25,15 @@ public:
 
 	virtual void StateEnter(ESmashCharacterStateID PreviousStateID);
 	virtual void StateExit(ESmashCharacterStateID NextStateID);
+	virtual void StateTick(float DeltaTime);
+	
 protected:
 	UPROPERTY()
 	TObjectPtr<ASmashCharacter> Character;
 	UPROPERTY()
 	TObjectPtr<USmashCharacterStateMachine> StateMachine;
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* Montage;
+	UPROPERTY(EditAnywhere)
+	float StateSpeed;
 };

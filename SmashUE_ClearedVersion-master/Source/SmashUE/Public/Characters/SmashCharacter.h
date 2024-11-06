@@ -37,13 +37,29 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	float OrientX=1.f;
 	void RotateMeshUsingOrientX()const;
+	
 #pragma endregion
 #pragma region State Machine
 public:
 	void CreateStateMachine();
 	void InitStateMachine();
+	void TickStateMachine(float DeltaTime) const;
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<USmashCharacterStateMachine> StateMachine;
+	
 #pragma endregion
+#pragma region Animation
+public:
+	void ChangeAnimation(UAnimMontage* Anim);
+protected:
+	UAnimMontage* YourAnimations;
+#pragma endregion
+#pragma region Movement
+public:
+	void ChangeSpeed(float NewSpeed);
+	void MoveForward();
+protected:
+	float Speed=0.f;
+	
 };

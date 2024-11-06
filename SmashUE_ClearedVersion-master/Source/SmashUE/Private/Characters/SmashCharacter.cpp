@@ -3,7 +3,9 @@
 
 #include "Characters/SmashCharacter.h"
 
+#include "MaterialHLSLTree.h"
 #include "Characters/SmashCharacterStateMachine.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -25,6 +27,8 @@ void ASmashCharacter::BeginPlay()
 void ASmashCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	TickStateMachine(DeltaTime);
+	MoveForward();
 	RotateMeshUsingOrientX();
 }
 
@@ -60,5 +64,30 @@ void ASmashCharacter::InitStateMachine()
 {
 	if(StateMachine==nullptr) return;
 	StateMachine->Init(this);
+}
+
+void ASmashCharacter::TickStateMachine(float DeltaTime) const
+{
+	if(StateMachine==nullptr) return;
+	StateMachine->Tick(DeltaTime);
+}
+
+void ASmashCharacter::ChangeAnimation(UAnimMontage* Anim)
+{
+	if(Anim!=YourAnimations)
+	{
+		YourAnimations = Anim;
+		PlayAnimMontage(YourAnimations);
+	}
+}
+
+void ASmashCharacter::ChangeSpeed(float NewSpeed)
+{
+	GetCharacterMovement()->MaxWalkSpeed=NewSpeed;
+}
+
+void ASmashCharacter::MoveForward()
+{
+	AddMovementInput(GetActorForwardVector(),OrientX);
 }
 
