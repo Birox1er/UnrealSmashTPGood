@@ -3,6 +3,10 @@
 
 #include "Characters/SmashCharacterStateWalk.h"
 
+#include <filesystem>
+
+#include "Characters/SmashCharacterStateMachine.h"
+
 #include "Characters/SmashCharacter.h"
 
 
@@ -42,4 +46,13 @@ void USmashCharacterStateWalk::StateTick(float DeltaTime)
 		FColor::Red,
 		TEXT("Tick State: Walk")
 	);
+	if(FMath::Abs(Character->GetInputMoveX())<0.1f)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
+	}
+	else
+	{
+		Character->SetOrientX(Character->GetInputMoveX());
+		Character->AddMovementInput(FVector::ForwardVector, Character->GetOrientX());
+	}
 }
