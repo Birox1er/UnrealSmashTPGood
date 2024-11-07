@@ -7,8 +7,11 @@
 #include "MatchGameMode.generated.h"
 
 
+class USmashCharacterInputData;
+class UInputMappingContext;
 class ASmashCharacter;
 class AArenaPlayerStart;
+
 /**
  * 
  */
@@ -21,8 +24,10 @@ public:
 protected:
 	UPROPERTY(EditAnywhere)
 	TArray<ASmashCharacter*>CharactersInsideArena;
-	
 private:
+	USmashCharacterInputData* LoadInputDataFromConfig();
+	UInputMappingContext* LoadInputMappingContextFromConfig();
+	
 	void FindPlayerStartActorsInArena(TArray<AArenaPlayerStart*>&ResultActors);
 	void SpawnCharacter(const TArray<AArenaPlayerStart*>&SpawnPoints);
 	TSubclassOf<ASmashCharacter> GetSmashCharacterClassFromInputType(EAutoReceiveInput::Type InputType) const;

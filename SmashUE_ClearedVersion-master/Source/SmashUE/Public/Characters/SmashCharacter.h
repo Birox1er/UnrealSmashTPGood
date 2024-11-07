@@ -7,13 +7,14 @@
 #include "SmashCharacter.generated.h"
 
 class USmashCharacterStateMachine;
+class UInputMappingContext;
+class USmashCharacterInputData;
 
 UCLASS()
 class SMASHUE_API ASmashCharacter : public ACharacter
 {
-#pragma region Unreal Defaults
 	GENERATED_BODY()
-
+#pragma region Unreal Defaults
 public:
 	// Sets default values for this character's properties
 	ASmashCharacter();
@@ -61,5 +62,13 @@ public:
 	void MoveForward();
 protected:
 	float Speed=0.f;
-	
+#pragma endregion
+#pragma region Input Data / Mapping Context
+public:
+	UPROPERTY()
+	TObjectPtr<UInputMappingContext> InputMappingContext;
+	UPROPERTY()
+	TObjectPtr<USmashCharacterInputData> InputData;
+protected:
+	void SetupInputMappingContextIntoController() const;
 };
