@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "SmashCharacterStateID.h"
 #include "Components/ActorComponent.h"
+#include "Characters/SmashCharacterSettings.h"
 #include "SmashCharacterState.generated.h"
 
 class ASmashCharacter;
 class USmashCharacterStateMachine;
+
 
 UCLASS(Abstract)
 class SMASHUE_API USmashCharacterState : public UActorComponent
@@ -20,9 +22,9 @@ public:
 	USmashCharacterState();
 	
 	virtual ESmashCharacterStateID GetStateID();
-	
+	USmashCharacterSettings* GetSettings(); 
 	virtual void StateInit(USmashCharacterStateMachine* InStateMachine);
-
+	float GetThreshold();
 	virtual void StateEnter(ESmashCharacterStateID PreviousStateID);
 	virtual void StateExit(ESmashCharacterStateID NextStateID);
 	virtual void StateTick(float DeltaTime);
@@ -36,4 +38,6 @@ protected:
 	UAnimMontage* Montage;
 	UPROPERTY(EditAnywhere)
 	float StateSpeed;
+	UPROPERTY(BlueprintReadOnly)
+	float Threshold;
 };

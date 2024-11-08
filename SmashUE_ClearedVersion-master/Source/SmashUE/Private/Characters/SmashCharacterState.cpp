@@ -24,12 +24,14 @@ void USmashCharacterState::StateInit(USmashCharacterStateMachine* InStateMachine
 {
 	StateMachine = InStateMachine;
 	Character = InStateMachine->GetCharacter();
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Magenta,
-		FString::Printf(TEXT("Init State %d"),GetStateID())
-	);
+	Threshold=GetThreshold();
+}
+
+float USmashCharacterState::GetThreshold()
+{
+	const USmashCharacterSettings* CharacterSettings = GetDefault<USmashCharacterSettings>();
+	if(CharacterSettings == nullptr) return 0;
+	return  CharacterSettings->InputMoveXThreshold;
 }
 
 void USmashCharacterState::StateEnter(ESmashCharacterStateID PreviousStateID)
