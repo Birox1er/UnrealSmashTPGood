@@ -14,10 +14,10 @@ class SMASHUE_API USmashCharacterStateFall : public USmashCharacterState
 
 public:
 	virtual ESmashCharacterStateID GetStateID() override;
-	UFUNCTION()
 	virtual void StateEnter(ESmashCharacterStateID PreviousStateID) override;
 	virtual void StateExit(ESmashCharacterStateID NextStateID) override;
 	virtual void StateTick(float DeltaTime) override;
+	UFUNCTION()
 	void OnInputMoveY(float InputMoveY);
 protected:
 	UPROPERTY(EditAnywhere)

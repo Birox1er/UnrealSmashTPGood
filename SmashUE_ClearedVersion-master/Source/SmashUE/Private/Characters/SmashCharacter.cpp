@@ -166,6 +166,18 @@ void ASmashCharacter::BindInputMoveAxisAndAction(UEnhancedInputComponent* Enhanc
 			this,
 			&ASmashCharacter::OnInputMoveY
 			);
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Triggered,
+			this,
+			&ASmashCharacter::OnInputMoveY
+			);
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Completed,
+			this,
+			&ASmashCharacter::OnInputMoveY
+			);
 	}
 }
 
@@ -230,8 +242,14 @@ float ASmashCharacter::GetInputMoveY() const
 void ASmashCharacter::OnInputMoveY(const FInputActionValue& InputActionValue)
 {
 	InputMoveY=InputActionValue.Get<float>();
-	if(GetVelocity().Z<-0.1f)
+	GEngine->AddOnScreenDebugMessage(
+		1,1,FColor::Red,FString::SanitizeFloat(InputMoveY));
+	if(GetVelocity().Z<-0.1f&&InputMoveY<-0.1)
 	{
 		InputMoveFallingYEvent.Broadcast(InputMoveY);
+	}
+	else
+	{
+		InputMoveFallingYEvent.Broadcast(0);
 	}
 }

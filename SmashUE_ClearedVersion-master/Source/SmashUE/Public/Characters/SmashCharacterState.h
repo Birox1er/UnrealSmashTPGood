@@ -38,6 +38,6 @@ protected:
 	UAnimMontage* Montage;
 	UPROPERTY(EditAnywhere)
 	float StateSpeed;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere)
 	float Threshold;
 };

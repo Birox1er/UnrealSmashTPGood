@@ -51,4 +51,3 @@ void USmashCharacterStateJump::StateTick(float DeltaTime)
 		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
 	}
 }
-
