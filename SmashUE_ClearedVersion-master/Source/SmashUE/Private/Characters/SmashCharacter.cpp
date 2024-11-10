@@ -10,7 +10,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Characters/SmashCharacterInputData.h"
+#include "Characters/SmashCharacterStateID.h"
 #include "Kismet/GameplayStatics.h"
+#include "Math/UnitConversion.h"
 #include "Slate/SGameLayerManager.h"
 
 
@@ -34,8 +36,9 @@ void ASmashCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	TickStateMachine(DeltaTime);
-	MoveForward();
+	MoveForward(DeltaTime);
 	RotateMeshUsingOrientX();
+	CurrentPos=GetActorLocation();
 }
 
 // Called to bind functionality to input
@@ -46,6 +49,7 @@ void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	UEnhancedInputComponent* EnhancedInputComponent= Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComponent==nullptr)return;
 	BindInputMoveAxisAndAction(EnhancedInputComponent);
+	BindInputJump(EnhancedInputComponent);
 }
 
 float ASmashCharacter::GetOrientX() const
@@ -82,12 +86,12 @@ void ASmashCharacter::TickStateMachine(float DeltaTime) const
 	StateMachine->Tick(DeltaTime);
 }
 
-void ASmashCharacter::ChangeAnimation(UAnimMontage* Anim)
+void ASmashCharacter::ChangeAnimation(UAnimMontage* Anim,float I)
 {
 	if(Anim!=YourAnimations)
 	{
 		YourAnimations = Anim;
-		PlayAnimMontage(YourAnimations);
+		PlayAnimMontage(YourAnimations,I);
 	}
 }
 
@@ -96,9 +100,11 @@ void ASmashCharacter::ChangeSpeed(float NewSpeed)
 	GetCharacterMovement()->MaxWalkSpeed=NewSpeed;
 }
 
-void ASmashCharacter::MoveForward()
+void ASmashCharacter::MoveForward(float DeltaTime)
 {
-	AddMovementInput(GetActorForwardVector(),OrientX);
+	FVector CurrentLocation=this->GetActorLocation();
+	CurrentLocation.X+=DeltaTime*GetCharacterMovement()->MaxWalkSpeed*GetInputMoveX();
+	SetActorLocation(CurrentLocation);
 }
 void ASmashCharacter::SetupInputMappingContextIntoController() const
 {
@@ -152,6 +158,15 @@ void ASmashCharacter::BindInputMoveAxisAndAction(UEnhancedInputComponent* Enhanc
 			&ASmashCharacter::OnInputMoveXFast
 			);
 	}
+	if(InputData->InputActionMoveY)
+	{
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Started,
+			this,
+			&ASmashCharacter::OnInputMoveY
+			);
+	}
 }
 
 void ASmashCharacter::OnInputMoveX(const FInputActionValue& InputActionValue)
@@ -163,4 +178,60 @@ void ASmashCharacter::OnInputMoveXFast(const FInputActionValue& InputActionValue
 {
 	InputMoveX=InputActionValue.Get<float>();
 	InputMoveXFastEvent.Broadcast(InputMoveX);
+}
+
+float ASmashCharacter::GetInputJump() const
+{
+	if(!IsJumping)
+	{
+		return InputJump;
+	}
+	return 0;
+}
+
+void ASmashCharacter::BindInputJump(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	if(InputData==nullptr) return;
+	if(InputData->InputActionMoveX)
+	{
+		EnhancedInputComponent->BindAction(
+
+		InputData->InputActionJump,
+		ETriggerEvent::Started,
+		this,
+		&ASmashCharacter::OnInputJump
+		);
+		EnhancedInputComponent->BindAction(
+		InputData->InputActionJump,
+		ETriggerEvent::Completed,
+		this,
+		&ASmashCharacter::OnInputJump
+		);
+	}
+}
+
+void ASmashCharacter::Jump(float Duration, float JumpMaxHeight,float DeltaTime)
+{
+
+	CurrentPos.Z+=DeltaTime*(JumpMaxHeight/Duration);
+	SetActorLocation(CurrentPos);
+}
+
+void ASmashCharacter::OnInputJump(const FInputActionValue& InputActionValue)
+{
+	InputJump=InputActionValue.Get<float>();
+}
+
+float ASmashCharacter::GetInputMoveY() const
+{
+	return  InputMoveY;
+}
+
+void ASmashCharacter::OnInputMoveY(const FInputActionValue& InputActionValue)
+{
+	InputMoveY=InputActionValue.Get<float>();
+	if(GetVelocity().Z<-0.1f)
+	{
+		InputMoveFallingYEvent.Broadcast(InputMoveY);
+	}
 }

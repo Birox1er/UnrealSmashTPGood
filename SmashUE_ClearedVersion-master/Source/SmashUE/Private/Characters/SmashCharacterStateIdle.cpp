@@ -21,6 +21,12 @@ void USmashCharacterStateIdle::OnInputMoveXFast(float InputMoveX)
 void USmashCharacterStateIdle::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
+	GEngine->AddOnScreenDebugMessage(
+		1,
+		0.3f,
+		FColor::Red,
+		"Jump State: Idle"
+		);
 	Character->InputMoveXFastEvent.AddDynamic(this,&USmashCharacterStateIdle::OnInputMoveXFast);
 	Character->ChangeAnimation(Montage);
 	Character->ChangeSpeed(StateSpeed);
@@ -38,5 +44,13 @@ void USmashCharacterStateIdle::StateTick(float DeltaTime)
 	if(FMath::Abs(Character->GetInputMoveX())>Threshold)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Walk);
+	}
+	if(Character->GetInputJump()>Threshold)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Jump);
+	}
+	if(Character->GetVelocity().Z<-Threshold)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
 	}
 }

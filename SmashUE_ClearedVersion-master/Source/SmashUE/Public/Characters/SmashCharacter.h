@@ -23,7 +23,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+private:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -52,16 +52,15 @@ protected:
 #pragma endregion
 #pragma region Animation
 public:
-	void ChangeAnimation(UAnimMontage* Anim);
+	void ChangeAnimation(UAnimMontage* Anim,float I=1);
 protected:
 	UAnimMontage* YourAnimations;
 #pragma endregion
 #pragma region Movement
 public:
 	void ChangeSpeed(float NewSpeed);
-	void MoveForward();
-protected:
-	float Speed=0.f;
+	void MoveForward(float deltaTime);
+	
 #pragma endregion
 #pragma region Input Data / Mapping Context
 public:
@@ -88,5 +87,30 @@ private:
 
 	void OnInputMoveX(const FInputActionValue& InputActionValue);
 	void OnInputMoveXFast(const ::FInputActionValue& InputActionValue);
+#pragma endregion
+#pragma region Jump/Fall
+public:
+	float GetInputJump() const;
+	bool IsJumping=false;
+	void BindInputJump(UEnhancedInputComponent* EnhancedInputComponent);
+	void Jump(float Duration,float JumpMaxHeight,float DeltaTime);
+	void OnInputJump(const FInputActionValue& InputActionValue);
+protected:
+	UPROPERTY()
+	float InputJump=0.f;
+
+#pragma endregion
+	#pragma region Input Move Y
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveYEvent, float,InputMoveY);
+	public:
+	float GetInputMoveY() const;
+	UPROPERTY()
+	FInputMoveYEvent InputMoveFallingYEvent;
+protected:
+	FVector CurrentPos=this->GetActorLocation();
+	float InputMoveY;
+private:
+	
+	void OnInputMoveY(const FInputActionValue& InputActionValue);
 #pragma endregion
 };
