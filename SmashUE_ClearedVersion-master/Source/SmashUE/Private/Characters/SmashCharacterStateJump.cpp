@@ -17,6 +17,7 @@ ESmashCharacterStateID USmashCharacterStateJump::GetStateID()
 void USmashCharacterStateJump::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
+	Character->GetCharacterMovement()->GravityScale=1;
 	Character->ChangeAnimation(Montage,.5/JumpDuration);
 	Character->ChangeSpeed(	StateSpeed*JumpAirControl);
 	Character->IsJumping = true;
@@ -32,12 +33,6 @@ void USmashCharacterStateJump::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
 	Timer+=DeltaTime;
-	GEngine->AddOnScreenDebugMessage(
-		1,
-		0.3f,
-		FColor::Red,
-		"Jump State: Jump"+FString::FromInt(Timer)+"/"+FString::FromInt(JumpDuration)
-		);
 	if(FMath::Abs(Character->GetInputMoveX())> Threshold)
 	{
 		Character->SetOrientX(Character->GetInputMoveX());

@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Camera/CameraWorldSubsystem.h"
 #include "Characters/SmashCharacterInputData.h"
 #include "Characters/SmashCharacterStateID.h"
 #include "Kismet/GameplayStatics.h"
@@ -29,6 +30,8 @@ void ASmashCharacter::BeginPlay()
 	Super::BeginPlay();
 	CreateStateMachine();
 	InitStateMachine();
+
+	GetWorld()->GetSubsystem<UCameraWorldSubsystem>()->AddFollowTarget(this);
 }
 
 // Called every frame
@@ -105,6 +108,8 @@ void ASmashCharacter::MoveForward(float DeltaTime)
 	FVector CurrentLocation=this->GetActorLocation();
 	CurrentLocation.X+=DeltaTime*GetCharacterMovement()->MaxWalkSpeed*GetInputMoveX();
 	SetActorLocation(CurrentLocation);
+	//AddMovementInput(GetActorForwardVector(),OrientX);
+	
 }
 void ASmashCharacter::SetupInputMappingContextIntoController() const
 {
@@ -224,8 +229,8 @@ void ASmashCharacter::BindInputJump(UEnhancedInputComponent* EnhancedInputCompon
 
 void ASmashCharacter::Jump(float Duration, float JumpMaxHeight,float DeltaTime)
 {
-
-	CurrentPos.Z+=DeltaTime*(JumpMaxHeight/Duration);
+	GEngine->AddOnScreenDebugMessage(1,0.3f,FColor::Red,FString::SanitizeFloat(GetCharacterMovement()->GetGravityZ()));
+	CurrentPos.Z+=GetCharacterMovement()->GetGravityZ()*DeltaTime*DeltaTime/2+DeltaTime*JumpMaxHeight/Duration;
 	SetActorLocation(CurrentPos);
 }
 
@@ -242,14 +247,4 @@ float ASmashCharacter::GetInputMoveY() const
 void ASmashCharacter::OnInputMoveY(const FInputActionValue& InputActionValue)
 {
 	InputMoveY=InputActionValue.Get<float>();
-	GEngine->AddOnScreenDebugMessage(
-		1,1,FColor::Red,FString::SanitizeFloat(InputMoveY));
-	if(GetVelocity().Z<-0.1f&&InputMoveY<-0.1)
-	{
-		InputMoveFallingYEvent.Broadcast(InputMoveY);
-	}
-	else
-	{
-		InputMoveFallingYEvent.Broadcast(0);
-	}
 }

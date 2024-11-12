@@ -21,12 +21,6 @@ void USmashCharacterStateIdle::OnInputMoveXFast(float InputMoveX)
 void USmashCharacterStateIdle::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-	GEngine->AddOnScreenDebugMessage(
-		1,
-		0.3f,
-		FColor::Red,
-		"Jump State: Idle"
-		);
 	Character->InputMoveXFastEvent.AddDynamic(this,&USmashCharacterStateIdle::OnInputMoveXFast);
 	Character->ChangeAnimation(Montage);
 	Character->ChangeSpeed(StateSpeed);

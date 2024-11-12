@@ -101,11 +101,9 @@ protected:
 
 #pragma endregion
 	#pragma region Input Move Y
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveYEvent, float,InputMoveY);
 	public:
 	float GetInputMoveY() const;
-	UPROPERTY()
-	FInputMoveYEvent InputMoveFallingYEvent;
+
 protected:
 	FVector CurrentPos=this->GetActorLocation();
 	float InputMoveY;

@@ -16,7 +16,6 @@ ESmashCharacterStateID USmashCharacterStateFall::GetStateID()
 void USmashCharacterStateFall::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-	Character->InputMoveFallingYEvent.AddDynamic(this,&USmashCharacterStateFall::OnInputMoveY);
 	Character->ChangeSpeed(StateSpeed*FallAirControl);
 	Character->ChangeAnimation(Montage);
 	Character->GetCharacterMovement()->GravityScale=FallGravityScale;
@@ -35,20 +34,16 @@ void USmashCharacterStateFall::StateTick(float DeltaTime)
 	{
 		Character->SetOrientX(Character->GetInputMoveX());
 	}
-	if(Character->GetVelocity().Z>-Threshold)
-	{
-		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
-	}
-}
-
-void USmashCharacterStateFall::OnInputMoveY(float InputMoveY)
-{
-	if(InputMoveY<-Threshold)
+	if(Character->GetInputMoveY()<-Threshold)
 	{
 		Character->GetCharacterMovement()->GravityScale=FallFastGravityScale;
 	}
 	else
 	{
 		Character->GetCharacterMovement()->GravityScale=FallAirControl;
+	}
+	if(Character->GetVelocity().Z>-Threshold)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
 	}
 }
