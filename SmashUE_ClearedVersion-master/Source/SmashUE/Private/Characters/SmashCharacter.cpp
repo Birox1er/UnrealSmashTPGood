@@ -91,11 +91,7 @@ void ASmashCharacter::TickStateMachine(float DeltaTime) const
 
 void ASmashCharacter::ChangeAnimation(UAnimMontage* Anim,float I)
 {
-	if(Anim!=YourAnimations)
-	{
-		YourAnimations = Anim;
-		PlayAnimMontage(YourAnimations,I);
-	}
+		PlayAnimMontage(Anim,I);
 }
 
 void ASmashCharacter::ChangeSpeed(float NewSpeed)
@@ -105,10 +101,14 @@ void ASmashCharacter::ChangeSpeed(float NewSpeed)
 
 void ASmashCharacter::MoveForward(float DeltaTime)
 {
-	FVector CurrentLocation=this->GetActorLocation();
-	CurrentLocation.X+=DeltaTime*GetCharacterMovement()->MaxWalkSpeed*GetInputMoveX();
-	SetActorLocation(CurrentLocation);
-	//AddMovementInput(GetActorForwardVector(),OrientX);
+	/*if(IsJumping)
+	{
+		FVector CurrentLocation=this->GetActorLocation();
+		CurrentLocation.X+=DeltaTime*GetCharacterMovement()->MaxWalkSpeed*GetInputMoveX();
+		SetActorLocation(CurrentLocation);
+	}
+	else*/
+		AddMovementInput(GetActorForwardVector(),OrientX);
 	
 }
 void ASmashCharacter::SetupInputMappingContextIntoController() const
@@ -227,11 +227,13 @@ void ASmashCharacter::BindInputJump(UEnhancedInputComponent* EnhancedInputCompon
 	}
 }
 
-void ASmashCharacter::Jump(float Duration, float JumpMaxHeight,float DeltaTime)
+void ASmashCharacter::Jump(float Duration, float JumpMaxHeight,float Timer)
 {
-	GEngine->AddOnScreenDebugMessage(1,0.3f,FColor::Red,FString::SanitizeFloat(GetCharacterMovement()->GetGravityZ()));
-	CurrentPos.Z+=GetCharacterMovement()->GetGravityZ()*DeltaTime*DeltaTime/2+DeltaTime*JumpMaxHeight/Duration;
-	SetActorLocation(CurrentPos);
+	float vel0= JumpMaxHeight/Duration;
+	GetCharacterMovement()->JumpZVelocity=vel0;
+	//CurrentPos.Z+=GetCharacterMovement()->GetGravityZ()*Timer*Timer/2+Timer*JumpMaxHeight/Duration;
+	//SetActorLocation(CurrentPos);
+	ACharacter::Jump();
 }
 
 void ASmashCharacter::OnInputJump(const FInputActionValue& InputActionValue)

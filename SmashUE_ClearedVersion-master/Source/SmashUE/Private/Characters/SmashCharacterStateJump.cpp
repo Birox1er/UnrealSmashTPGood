@@ -21,12 +21,15 @@ void USmashCharacterStateJump::StateEnter(ESmashCharacterStateID PreviousStateID
 	Character->ChangeAnimation(Montage,.5/JumpDuration);
 	Character->ChangeSpeed(	StateSpeed*JumpAirControl);
 	Character->IsJumping = true;
+	Character->Jump(JumpDuration,MaxHeight,Timer);
 	Timer=0;
 }
 
 void USmashCharacterStateJump::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
+	Character->StopJumping();
+	Character->GetCharacterMovement()->StopActiveMovement();
 }
 
 void USmashCharacterStateJump::StateTick(float DeltaTime)
@@ -37,11 +40,7 @@ void USmashCharacterStateJump::StateTick(float DeltaTime)
 	{
 		Character->SetOrientX(Character->GetInputMoveX());
 	}
-	if(Timer<JumpDuration)
-	{
-		Character->Jump(JumpDuration,MaxHeight,DeltaTime);
-	}
-	else
+	if(Character->GetVelocity().Z<-Threshold)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
 	}

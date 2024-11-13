@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraFollowTarget.h"
 #include "GameFramework/Character.h"
 #include "SmashCharacter.generated.h"
 
@@ -12,8 +13,10 @@ class USmashCharacterInputData;
 
 UCLASS()
 class SMASHUE_API ASmashCharacter : public ACharacter
+									//public ICameraFollowTarget
 {
 	GENERATED_BODY()
+	
 #pragma region Unreal Defaults
 public:
 	// Sets default values for this character's properties
@@ -53,8 +56,6 @@ protected:
 #pragma region Animation
 public:
 	void ChangeAnimation(UAnimMontage* Anim,float I=1);
-protected:
-	UAnimMontage* YourAnimations;
 #pragma endregion
 #pragma region Movement
 public:
@@ -100,7 +101,7 @@ protected:
 	float InputJump=0.f;
 
 #pragma endregion
-	#pragma region Input Move Y
+#pragma region Input Move Y
 	public:
 	float GetInputMoveY() const;
 
@@ -111,4 +112,5 @@ private:
 	
 	void OnInputMoveY(const FInputActionValue& InputActionValue);
 #pragma endregion
+	
 };
