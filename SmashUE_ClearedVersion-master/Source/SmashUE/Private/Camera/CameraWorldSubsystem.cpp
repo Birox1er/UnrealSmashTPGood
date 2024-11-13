@@ -41,21 +41,21 @@ void UCameraWorldSubsystem::RemoveFollowTarget(AActor* Target)
 void UCameraWorldSubsystem::TickUpdateCameraPosition(float DeltaTime)
 {
 	FVector CurrentLocation=CalculateAveragePositionBetweenTargets();
-	CameraMain->SetWorldLocation(CurrentLocation);
+	CameraMain->GetAttachParentActor()->SetActorLocation(CurrentLocation);
 }
 
 FVector UCameraWorldSubsystem::CalculateAveragePositionBetweenTargets()
 {
+	FVector CurrentLocationY=FVector(0, CameraMain->GetAttachParentActor()->GetActorLocation().Y, 0);
 	FVector Average = FVector::ZeroVector;
 	if(FollowTargets.Num() > 0)
 	{
 		for(int32 i = 0; i < FollowTargets.Num(); i++)
 		{
-			Average = Average + FollowTargets[i]->GetActorLocation();
+			Average += FVector( FollowTargets[i]->GetActorLocation().X,0,FollowTargets[i]->GetActorLocation().Z);
 		}
-		Average = Average / FollowTargets.Num();	
+		Average = FVector(Average.X / FollowTargets.Num(),Average.Y,Average.Z/FollowTargets.Num())+CurrentLocationY;	
 	}
-	GEngine->AddOnScreenDebugMessage(1,1.f,FColor::Red,FString::SanitizeFloat(Average.X));
 	return Average;
 }
 
@@ -66,7 +66,15 @@ UCameraComponent* UCameraWorldSubsystem::FindCameraByTag(const FName& Tag) const
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(),Tag,FoundActors);
 	if(FoundActors.Num() > 0)
 	{
-		Cam = Cast<UCameraComponent>(FoundActors[0]);
+		if(FoundActors[0]->GetComponentByClass<UCameraComponent>()!=nullptr)
+		{
+			GEngine->AddOnScreenDebugMessage(1,1.f,FColor::Red,FString::FromInt(FoundActors.Num()));
+			Cam=FoundActors[0]->GetComponentByClass<UCameraComponent>();
+		}
+		if(Cam==nullptr)
+		{
+			
+		}
 	}
 	return Cam;
 }
