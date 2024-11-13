@@ -19,6 +19,8 @@ void USmashCharacterStateFall::StateEnter(ESmashCharacterStateID PreviousStateID
 	Character->ChangeSpeed(StateSpeed*FallAirControl);
 	Character->ChangeAnimation(Montage);
 	Character->GetCharacterMovement()->GravityScale=FallGravityScale;
+	Character->GetCharacterMovement()->AirControl=FallAirControl;
+
 }
 
 void USmashCharacterStateFall::StateExit(ESmashCharacterStateID NextStateID)

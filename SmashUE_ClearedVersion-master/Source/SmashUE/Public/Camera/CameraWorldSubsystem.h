@@ -19,13 +19,13 @@ class SMASHUE_API UCameraWorldSubsystem : public UTickableWorldSubsystem
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override{return TStatId();};
-	void AddFollowTarget(AActor* Target);
-	void RemoveFollowTarget(AActor* Target);
+	void AddFollowTarget(UObject* Target);
+	void RemoveFollowTarget(UObject* Target);
 protected:
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> CameraMain;
 	UPROPERTY()
-	TArray<AActor*> FollowTargets;
+	TArray<UObject*> FollowTargets;
 	void TickUpdateCameraPosition(float DeltaTime);
 	FVector CalculateAveragePositionBetweenTargets();
 	UCameraComponent* FindCameraByTag(const FName& Tag) const;

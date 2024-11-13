@@ -12,8 +12,8 @@ class UInputMappingContext;
 class USmashCharacterInputData;
 
 UCLASS()
-class SMASHUE_API ASmashCharacter : public ACharacter
-									//public ICameraFollowTarget
+class SMASHUE_API ASmashCharacter : public ACharacter,
+									public ICameraFollowTarget
 {
 	GENERATED_BODY()
 	
@@ -112,5 +112,12 @@ private:
 	
 	void OnInputMoveY(const FInputActionValue& InputActionValue);
 #pragma endregion
-	
+#pragma region Camera Interface
+public:
+	virtual FVector GetFollowPosition() override;
+	virtual bool IsFollowing() override;
+
+private:
+	bool IsFollowable=true;
+#pragma endregion
 };

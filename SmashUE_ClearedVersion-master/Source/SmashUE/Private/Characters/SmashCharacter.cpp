@@ -108,7 +108,7 @@ void ASmashCharacter::MoveForward(float DeltaTime)
 		SetActorLocation(CurrentLocation);
 	}
 	else*/
-		AddMovementInput(GetActorForwardVector(),OrientX);
+		AddMovementInput(GetActorForwardVector(),GetInputMoveX(),true);
 	
 }
 void ASmashCharacter::SetupInputMappingContextIntoController() const
@@ -249,4 +249,14 @@ float ASmashCharacter::GetInputMoveY() const
 void ASmashCharacter::OnInputMoveY(const FInputActionValue& InputActionValue)
 {
 	InputMoveY=InputActionValue.Get<float>();
+}
+
+FVector ASmashCharacter::GetFollowPosition()
+{
+	return CurrentPos;
+}
+
+bool ASmashCharacter::IsFollowing()
+{
+	return IsFollowable;
 }

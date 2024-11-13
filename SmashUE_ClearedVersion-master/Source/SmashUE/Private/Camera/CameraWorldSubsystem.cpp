@@ -6,6 +6,8 @@
 #include "EditorClassUtils.h"
 #include "ToolBuilderUtil.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/CameraFollowTarget.h"
+#include "Characters/SmashCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCameraWorldSubsystem::PostInitialize()
@@ -25,12 +27,12 @@ void UCameraWorldSubsystem::Tick(float DeltaTime)
 	TickUpdateCameraPosition(DeltaTime);
 }
 
-void UCameraWorldSubsystem::AddFollowTarget(AActor* Target)
+void UCameraWorldSubsystem::AddFollowTarget(UObject* Target)
 {
 	FollowTargets.Add(Target);
 }
 
-void UCameraWorldSubsystem::RemoveFollowTarget(AActor* Target)
+void UCameraWorldSubsystem::RemoveFollowTarget(UObject* Target)
 {
 	if(FollowTargets.Contains(Target))
 	{
@@ -50,11 +52,16 @@ FVector UCameraWorldSubsystem::CalculateAveragePositionBetweenTargets()
 	FVector Average = FVector::ZeroVector;
 	if(FollowTargets.Num() > 0)
 	{
+		int Index = 0;
 		for(int32 i = 0; i < FollowTargets.Num(); i++)
 		{
-			Average += FVector( FollowTargets[i]->GetActorLocation().X,0,FollowTargets[i]->GetActorLocation().Z);
+			if(FollowTargets[i]->Implements<ICameraFollowTarget>()&&Cast<ASmashCharacter>(FollowTargets[i])->IsFollowing())
+			{
+				Average += Cast<ASmashCharacter>(FollowTargets[i])->GetFollowPosition();
+				Index++;
+			}
 		}
-		Average = FVector(Average.X / FollowTargets.Num(),Average.Y,Average.Z/FollowTargets.Num())+CurrentLocationY;	
+		Average = FVector(Average.X / Index,0,Average.Z/Index)+CurrentLocationY;	
 	}
 	return Average;
 }
