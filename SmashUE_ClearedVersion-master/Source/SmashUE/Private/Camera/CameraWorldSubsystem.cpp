@@ -82,7 +82,7 @@ void UCameraWorldSubsystem::ClampPositionInCameraBounds(FVector& Position)
 	}
 	else if(Position.X+WorldBoundsMin.X/2<CameraBoundsMin.X)//+CameraMain->OrthoWidth/2)
 	{
-		Position.X=CameraBoundsMin.X+WorldBoundsMin.X;//+CameraMain->OrthoWidth/2;
+		Position.X=CameraBoundsMin.X-WorldBoundsMin.X/2;//+CameraMain->OrthoWidth/2;
 	}
 	if(Position.Z+WorldBoundsMin.Z/2>CameraBoundsMax.Y)//-CameraMain->OrthoWidth/CameraMain->AspectRatio/2)
 	{
@@ -90,7 +90,7 @@ void UCameraWorldSubsystem::ClampPositionInCameraBounds(FVector& Position)
 	}
 	else if(Position.Z+WorldBoundsMax.Z/2<CameraBoundsMin.Y)//+CameraMain->OrthoWidth/CameraMain->AspectRatio/2)
 	{
-		Position.Z=CameraBoundsMin.Y+WorldBoundsMax.Z;//+ CameraMain->OrthoWidth/CameraMain->AspectRatio/2;
+		Position.Z=CameraBoundsMin.Y-WorldBoundsMax.Z/2;//+ CameraMain->OrthoWidth/CameraMain->AspectRatio/2;
 	}
 }
 
