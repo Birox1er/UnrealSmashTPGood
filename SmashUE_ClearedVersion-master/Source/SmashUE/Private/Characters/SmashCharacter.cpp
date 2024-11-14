@@ -229,8 +229,9 @@ void ASmashCharacter::BindInputJump(UEnhancedInputComponent* EnhancedInputCompon
 
 void ASmashCharacter::Jump(float Duration, float JumpMaxHeight,float Timer)
 {
-	float vel0= JumpMaxHeight/Duration;
+	float vel0= 2*JumpMaxHeight/Duration;
 	GetCharacterMovement()->JumpZVelocity=vel0;
+	GetCharacterMovement()->GravityScale=vel0/(Duration*981);
 	//CurrentPos.Z+=GetCharacterMovement()->GetGravityZ()*Timer*Timer/2+Timer*JumpMaxHeight/Duration;
 	//SetActorLocation(CurrentPos);
 	ACharacter::Jump();

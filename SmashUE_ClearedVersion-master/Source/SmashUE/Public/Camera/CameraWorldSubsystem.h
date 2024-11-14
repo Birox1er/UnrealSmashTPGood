@@ -43,6 +43,21 @@ protected:
 	UCameraComponent* FindCameraByTag(const FName& Tag) const;
 	void TickUpdateCameraPosition(float DeltaTime);
 #pragma endregion
-	#pragma region Bounds
+#pragma region Bounds
+protected:
+	UPROPERTY()
+	FVector2D CameraBoundsMin;
+	UPROPERTY()
+	FVector2D CameraBoundsMax;
+	UPROPERTY()
+	float CameraBoundsYProjectionCenter;
+
+	AActor* FindCameraBoundsActor();
+
+	void InitCameraBounds(AActor* CameraBoundsActor);
+	void ClampPositionInCameraBounds(FVector& Position);
+	void GetViewportBounds(FVector2D& OutViewportBoundsMin,FVector2d& OutViewportBoundsMax);
+	FVector CalculateWorldPositionFromViewportPosition(const FVector2D& ViewportPosition);
+#pragma endregion
 
 };
