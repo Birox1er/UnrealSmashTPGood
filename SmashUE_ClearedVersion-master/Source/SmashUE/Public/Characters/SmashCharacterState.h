@@ -22,7 +22,8 @@ public:
 	USmashCharacterState();
 	
 	virtual ESmashCharacterStateID GetStateID();
-	USmashCharacterSettings* GetSettings(); 
+	
+
 	virtual void StateInit(USmashCharacterStateMachine* InStateMachine);
 	float GetThreshold();
 	virtual void StateEnter(ESmashCharacterStateID PreviousStateID);

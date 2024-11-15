@@ -8,6 +8,7 @@
 #include "ToolBuilderUtil.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CameraFollowTarget.h"
+#include "Camera/CameraSettings.h"
 #include "Characters/SmashCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -19,8 +20,10 @@ void UCameraWorldSubsystem::PostInitialize()
 
 void UCameraWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
+	const UCameraSettings* CameraSettings=GetDefault<UCameraSettings>();
+	if(CameraSettings==nullptr) return;
 	Super::OnWorldBeginPlay(InWorld);
-	CameraMain= FindCameraByTag(TEXT("CameraMain"));
+	CameraMain= FindCameraByTag(CameraSettings->CameraMainTag);
 
 	AActor* CameraBoundActor=FindCameraBoundsActor();
 	if(CameraBoundActor!=nullptr)
@@ -52,17 +55,23 @@ void UCameraWorldSubsystem::RemoveFollowTarget(UObject* Target)
 
 void UCameraWorldSubsystem::TickUpdateCameraPosition(float DeltaTime)
 {
+	const UCameraSettings* CameraSettings=GetDefault<UCameraSettings>();
+	if(CameraSettings==nullptr) return;
+	FVector BaseLocation=CameraMain->GetAttachParentActor()->GetActorLocation();
 	FVector CurrentLocation=CalculateAveragePositionBetweenTargets();
 	ClampPositionInCameraBounds(CurrentLocation);
-	CameraMain->GetAttachParentActor()->SetActorLocation(CurrentLocation);
+	CameraMain->GetAttachParentActor()->SetActorLocation(BaseLocation+(CurrentLocation-BaseLocation)*DeltaTime*CameraSettings->PositionDampingFactor);
 }
 
 void UCameraWorldSubsystem::TickUpdateCameraZoom(float DeltaTime)
 {
+	const UCameraSettings* CameraSettings=GetDefault<UCameraSettings>();
+	if(CameraSettings==nullptr) return;
 	if(CameraMain==nullptr)return;
-	float CurrentZoom=0;
 	float GreatestDistanceBetweenTargets=CalculateGreatestDistanceBetweenTargets();
-	float CurrentInvZoom=UKismetMathLibrary::NormalizeToRange(GreatestDistanceBetweenTargets,CameraZoomDistanceBetweenTargetsMin,CameraZoomDistanceBetweenTargetsMax);
+	float CurrentInvZoom=UKismetMathLibrary::NormalizeToRange(GreatestDistanceBetweenTargets,
+		CameraSettings->DistanceBetweenTargetsMin,
+		CameraSettings->DistanceBetweenTargetsMax);
 	if(CurrentInvZoom>1)
 	{
 		CurrentInvZoom=1;
@@ -71,19 +80,18 @@ void UCameraWorldSubsystem::TickUpdateCameraZoom(float DeltaTime)
 	{
 		CurrentInvZoom=0;
 	}
-	/*else
-	{
-		CurrentZoom=1-CurrentInvZoom;
-	}*/
+	FVector BaseLocation=CameraMain->GetAttachParentActor()->GetActorLocation();
 	FVector CurrentLocation=CameraMain->GetAttachParentActor()->GetActorLocation();
 	CurrentLocation.Y =FMath::Lerp(CameraZoomMin,CameraZoomMax,CurrentInvZoom);
-	CameraMain->GetAttachParentActor()->SetActorLocation(CurrentLocation);
+	CameraMain->GetAttachParentActor()->SetActorLocation(BaseLocation+(CurrentLocation-BaseLocation)*DeltaTime*CameraSettings->SizeDampingFactor);
 }
 
 AActor* UCameraWorldSubsystem::FindCameraBoundsActor()
 {
+	const UCameraSettings* CameraSettings=GetDefault<UCameraSettings>();
+	if(CameraSettings==nullptr) return nullptr;
 	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(),"CameraBounds",FoundActors);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(),CameraSettings->CameraBoundsTag,FoundActors);
 	if(FoundActors.Num()>0)
 	{
 		return FoundActors[0];
@@ -161,10 +169,12 @@ FVector UCameraWorldSubsystem::CalculateWorldPositionFromViewportPosition(const 
 
 void UCameraWorldSubsystem::InitCameraZoomParameters()
 {
+	const UCameraSettings* CameraSettings=GetDefault<UCameraSettings>();
+	if(CameraSettings==nullptr) return;
 	TArray<AActor*> FoundActorsMin;
 	TArray<AActor*> FoundActorsMax;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(),"CameraDistanceMin",FoundActorsMin);
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(),"CameraDistanceMax",FoundActorsMax);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(),CameraSettings->CameraDistanceMinTag,FoundActorsMin);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(),CameraSettings->CameraDistanceMaxTag,FoundActorsMax);
 	if(FoundActorsMin.Num()>0)
 	{
 		CameraZoomMin=FoundActorsMin[0]->GetActorLocation().Y;
@@ -227,7 +237,6 @@ UCameraComponent* UCameraWorldSubsystem::FindCameraByTag(const FName& Tag) const
 	{
 		if(FoundActors[0]->GetComponentByClass<UCameraComponent>()!=nullptr)
 		{
-			GEngine->AddOnScreenDebugMessage(1,1.f,FColor::Red,FString::FromInt(FoundActors.Num()));
 			Cam=FoundActors[0]->GetComponentByClass<UCameraComponent>();
 		}
 	}

@@ -67,10 +67,6 @@ protected:
 	float CameraZoomMin=0.f;
 	UPROPERTY()
 	float CameraZoomMax=0.f;
-	UPROPERTY()
-	float CameraZoomDistanceBetweenTargetsMin=300.f;
-	UPROPERTY()
-	float CameraZoomDistanceBetweenTargetsMax=1500.f;
 	UFUNCTION()
 	void InitCameraZoomParameters();
 #pragma endregion
