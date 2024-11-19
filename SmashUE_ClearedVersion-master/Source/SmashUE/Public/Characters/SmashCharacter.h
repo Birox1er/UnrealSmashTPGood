@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "Camera/CameraFollowTarget.h"
 #include "GameFramework/Character.h"
 #include "SmashCharacter.generated.h"
@@ -94,7 +95,6 @@ public:
 	float GetInputJump() const;
 	bool IsJumping=false;
 	void BindInputJump(UEnhancedInputComponent* EnhancedInputComponent);
-	void Jump(float Duration,float JumpMaxHeight,float DeltaTime);
 	void OnInputJump(const FInputActionValue& InputActionValue);
 protected:
 	UPROPERTY()

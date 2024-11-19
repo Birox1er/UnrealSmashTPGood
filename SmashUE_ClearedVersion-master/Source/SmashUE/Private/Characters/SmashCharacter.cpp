@@ -5,6 +5,7 @@
 
 #include "EnhancedPlayerInput.h"
 #include "MaterialHLSLTree.h"
+#include "InputActionValue.h"
 #include "Characters/SmashCharacterStateMachine.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -227,15 +228,7 @@ void ASmashCharacter::BindInputJump(UEnhancedInputComponent* EnhancedInputCompon
 	}
 }
 
-void ASmashCharacter::Jump(float Duration, float JumpMaxHeight,float Timer)
-{
-	float vel0= 2*JumpMaxHeight/Duration;
-	GetCharacterMovement()->JumpZVelocity=vel0;
-	GetCharacterMovement()->GravityScale=vel0/(Duration*981);
-	//CurrentPos.Z+=GetCharacterMovement()->GetGravityZ()*Timer*Timer/2+Timer*JumpMaxHeight/Duration;
-	//SetActorLocation(CurrentPos);
-	ACharacter::Jump();
-}
+
 
 void ASmashCharacter::OnInputJump(const FInputActionValue& InputActionValue)
 {

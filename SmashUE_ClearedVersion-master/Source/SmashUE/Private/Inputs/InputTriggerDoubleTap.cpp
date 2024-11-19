@@ -6,7 +6,7 @@
 #include "EnhancedPlayerInput.h"
 
 ETriggerState UInputTriggerDoubleTap::UpdateState_Implementation(const UEnhancedPlayerInput* PlayerInput,
-                                                                 FInputActionValue ModifiedValue, float DeltaTime)
+                                                                 const FInputActionValue ModifiedValue, float DeltaTime)
 {
 	if(IsActuated(ModifiedValue)&&!IsActuated(LastValue))
 	{

@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "SmashCharacterStateMachine.generated.h"
 
+enum class ESmashCharacterStateID : uint8;
 enum class ESmashCharacterState : uint8;
 class USmashCharacterState;
 class ASmashCharacter;
