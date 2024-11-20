@@ -11,6 +11,7 @@ public class LocalMultiplayer : ModuleRules
             {
                 "Core",
                 "EnhancedInput",
+                "DeveloperSettings" 
             }
         );
 
