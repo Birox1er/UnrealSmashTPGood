@@ -115,21 +115,22 @@ void UCameraWorldSubsystem::ClampPositionInCameraBounds(FVector& Position)
 	GetViewportBounds(ViewportBoundsMin, ViewportBoundsMax);
 	FVector WorldBoundsMin=CalculateWorldPositionFromViewportPosition(ViewportBoundsMin);
 	FVector WorldBoundsMax=CalculateWorldPositionFromViewportPosition(ViewportBoundsMax);
-	if(Position.X+WorldBoundsMax.X/2>CameraBoundsMax.X)
+	FVector Diag=(WorldBoundsMax-WorldBoundsMin);
+	if(Position.X>CameraBoundsMax.X-Diag.X/2)
 	{
-		Position.X=CameraBoundsMax.X-WorldBoundsMax.X/2;
+		Position.X=CameraBoundsMax.X-Diag.X/2;
 	}
-	else if(Position.X+WorldBoundsMin.X/2<CameraBoundsMin.X)
+	else if(Position.X<CameraBoundsMin.X+Diag.X/2)
 	{
-		Position.X=CameraBoundsMin.X-WorldBoundsMin.X/2;
+		Position.X=CameraBoundsMin.X+Diag.X/2;
 	}
-	if(Position.Z+WorldBoundsMin.Z/2>CameraBoundsMax.Y)
+	if(Position.Z>CameraBoundsMax.Y+Diag.Z/2)
 	{
- 		Position.Z=CameraBoundsMax.Y-WorldBoundsMin.Z/2;
+		Position.Z=CameraBoundsMax.Y+Diag.Z/2;
 	}
-	else if(Position.Z+WorldBoundsMax.Z/2<CameraBoundsMin.Y)
+	else if(Position.Z<CameraBoundsMin.Y-Diag.Z/2)
 	{
-		Position.Z=CameraBoundsMin.Y-WorldBoundsMax.Z/2;
+		Position.Z=CameraBoundsMin.Y-Diag.Z/2;
 	}
 }
 

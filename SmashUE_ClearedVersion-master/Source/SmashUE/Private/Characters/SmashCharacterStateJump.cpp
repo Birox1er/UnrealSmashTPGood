@@ -21,7 +21,12 @@ void USmashCharacterStateJump::StateEnter(ESmashCharacterStateID PreviousStateID
 	Character->ChangeSpeed(	StateSpeed);
 	Character->GetCharacterMovement()->AirControl=JumpAirControl;
 	Character->IsJumping = true;
-	Character->Jump(JumpDuration,MaxHeight,Timer);
+	float vel0= 2*MaxHeight/JumpDuration;
+	Character->GetCharacterMovement()->JumpZVelocity=vel0;
+	Character->GetCharacterMovement()->GravityScale=vel0/(JumpDuration*981);
+	//CurrentPos.Z+=GetCharacterMovement()->GetGravityZ()*Timer*Timer/2+Timer*JumpMaxHeight/Duration;
+	//SetActorLocation(CurrentPos);
+	Character->Jump();
 	
 	Timer=0;
 }
