@@ -20,7 +20,7 @@ public:
 
 	int GetAssignedPlayerIndexFromKeyboardProfileIndex(int KeyboardProfileIndex);
 
-	int AssignedNewPlayerToKeyboardProfile(int KeyboardProfileIndex);
+	int AssignNewPlayerToKeyboardProfile(int KeyboardProfileIndex);
 
 	void AssignKeyboardMapping(int PlayerIndex,int keyboardProfileIndex,ELocalMultiplayerInputMappingType MappingType )const;
 
