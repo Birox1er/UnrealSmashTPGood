@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#include "LocalMultiplayerSubsystem.h"
 #include "LocalMultiplayerSettings.h"
 #include "GameFramework/PlayerController.h"
-#include "LocalMultiplayerSubsystem.h"
 
 #include "EnhancedInputSubsystems.h"
 
@@ -16,12 +15,12 @@ void ULocalMultiplayerSubsystem::CreateAndInitPlayer(ELocalMultiplayerInputMappi
 
 	for (int i = 0; i < Settings->KeyboardProfilesData.Num(); ++i)
 	{
-		AssignKeyboardMapping(AssignNewPlayerToKeyboardProfile(i),i,ELocalMultiplayerInputMappingType::InGame);
+		AssignKeyboardMapping(AssignNewPlayerToKeyboardProfile(i),i,MappingType);
 	}
 
 	for (int i = 0; i < Settings->NbMaxPlayer; ++i)
 	{
-		AssignNewPlayerToGamepadDeviceID(i);
+		AssignGamepadInputMapping(AssignedNewPlayerToGamepadID(i),MappingType);
 	}
 }
 
@@ -55,26 +54,34 @@ void ULocalMultiplayerSubsystem::AssignKeyboardMapping(int PlayerIndex, int keyb
 	{
 		return;
 	}
+	if(GetGameInstance()->GetLocalPlayerByIndex(PlayerIndex)==nullptr)
+	{
+		FString OutError;
+		GetGameInstance()->CreateLocalPlayer(PlayerIndex,OutError,true);
+	}
 	APlayerController* PlayerController=GetGameInstance()->GetLocalPlayers()[PlayerIndex]->PlayerController;
 	if (PlayerController==nullptr)
 	{
 		return;
 	}
-	UInputMappingContext* IMC=Settings->KeyboardProfilesData[keyboardProfileIndex].GetIMCFromType(MappingType);
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = PlayerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	if (InputSubsystem)
+	if (InputSubsystem==nullptr)
 	{
-		InputSubsystem->AddMappingContext(IMC, 1);
+		return;
 	}
+	UInputMappingContext* IMC=Settings->KeyboardProfilesData[keyboardProfileIndex].GetIMCFromType(MappingType);
+	
+	InputSubsystem->AddMappingContext(IMC, 1);
+
 }
 
 int ULocalMultiplayerSubsystem::GetAssignedPlayerIndexFromGamepadDeviceID(int DeviceIDDeviceID)
 {
-	if(!PlayerIndexFromKeyboardProfileIndex.Contains(DeviceIDDeviceID))
+	if(!PlayerIndexFromGamepadProfileIndex.Contains(DeviceIDDeviceID))
 	{
 		return -1;
 	}
-	return PlayerIndexFromKeyboardProfileIndex[DeviceIDDeviceID];
+	return PlayerIndexFromGamepadProfileIndex[DeviceIDDeviceID];
 }
 
 int ULocalMultiplayerSubsystem::AssignedNewPlayerToGamepadID(int DeviceIDDeviceID)
@@ -84,30 +91,51 @@ int ULocalMultiplayerSubsystem::AssignedNewPlayerToGamepadID(int DeviceIDDeviceI
 	{
 		return-1;
 	}
-	PlayerIndexFromKeyboardProfileIndex.Add( DeviceIDDeviceID,LastAssignedPlayerIndex);
+	PlayerIndexFromGamepadProfileIndex.Add( DeviceIDDeviceID,LastAssignedPlayerIndex);
 	LastAssignedPlayerIndex++;
 	if(LastAssignedPlayerIndex >= Settings->NbMaxPlayer) LastAssignedPlayerIndex = 0;
-	return PlayerIndexFromKeyboardProfileIndex[DeviceIDDeviceID];
+	return PlayerIndexFromGamepadProfileIndex[DeviceIDDeviceID];
 }
 
 void ULocalMultiplayerSubsystem::AssignGamepadInputMapping(int PlayerIndex,
 	ELocalMultiplayerInputMappingType MappingType) const
 {
+    
 	const ULocalMultiplayerSettings* Settings = GetDefault<ULocalMultiplayerSettings>();
-	if (!Settings)
+	if (Settings == nullptr)
 	{
 		return;
 	}
-	APlayerController* PlayerController=GetGameInstance()->GetLocalPlayers()[PlayerIndex]->PlayerController;
-	if (PlayerController==nullptr)
+
+	const FLocalMultiplayerProfileData& ProfileData = Settings->GamepadProfileData;
+
+	UInputMappingContext* IMC = ProfileData.GetIMCFromType(MappingType);
+	if (!IMC)
 	{
 		return;
 	}
-	UInputMappingContext* IMC=Settings->GamepadProfileData.GetIMCFromType(MappingType);
+
+	UGameInstance* GameInstance = GetGameInstance();
+	ULocalPlayer* LocalPlayer = GameInstance->GetLocalPlayerByIndex(PlayerIndex);
+
+	if(LocalPlayer == nullptr)
+	{
+		FString OutError;
+		LocalPlayer = GameInstance->CreateLocalPlayer(PlayerIndex,  OutError, true);
+	}
+    
+	APlayerController* PlayerController = LocalPlayer->GetPlayerController(GameInstance->GetWorld());
+	if (!PlayerController)
+	{
+		return;
+	}
+
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = PlayerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	if (InputSubsystem)
+	if (InputSubsystem == nullptr)
 	{
-		InputSubsystem->AddMappingContext(IMC, 1);
+		return;
 	}
+
+	InputSubsystem->AddMappingContext(IMC, 1);
 }
 

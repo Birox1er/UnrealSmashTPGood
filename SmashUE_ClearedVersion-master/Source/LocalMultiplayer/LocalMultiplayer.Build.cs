@@ -11,7 +11,7 @@ public class LocalMultiplayer : ModuleRules
             {
                 "Core",
                 "EnhancedInput",
-                "DeveloperSettings" 
+                "DeveloperSettings"
             }
         );
 
@@ -21,7 +21,8 @@ public class LocalMultiplayer : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "InputCore"
             }
         );
     }

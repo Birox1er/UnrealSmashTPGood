@@ -35,11 +35,15 @@ private:
 #pragma endregion
 #pragma region Orient
 public:
+	
 	float GetOrientX() const;
 	void SetOrientX(float NewOrientX);
+	void SetLastOrientX(float NewOrientX);
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	float OrientX=1.f;
+	UPROPERTY(EditAnywhere)
+	float LastOrientX=1.f;
 	void RotateMeshUsingOrientX()const;
 	
 #pragma endregion

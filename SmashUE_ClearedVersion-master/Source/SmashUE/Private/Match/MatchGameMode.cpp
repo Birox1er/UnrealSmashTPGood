@@ -7,10 +7,12 @@
 #include "Characters/SmashCharacter.h"
 #include "Characters/SmashCharacterSettings.h"
 //#include "Characters/SmashCharacterInputData.h"
+#include "LocalMultiplayerSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 void AMatchGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	CreateAndInitPlayers();
 	TArray<AArenaPlayerStart*> PlayerStartPoints;
 	FindPlayerStartActorsInArena(PlayerStartPoints);
 	SpawnCharacter(PlayerStartPoints);
@@ -87,6 +89,15 @@ UInputMappingContext* AMatchGameMode::LoadInputMappingContextFromConfig()
 	const USmashCharacterSettings* CharacterSettings = GetDefault<USmashCharacterSettings>();
 	if(CharacterSettings == nullptr) return nullptr;
 	return  CharacterSettings->InputMappingContext.LoadSynchronous();
+}
+
+void AMatchGameMode::CreateAndInitPlayers()
+{
+	UGameInstance* GameInstance = GetWorld()->GetGameInstance();
+	if(GameInstance == nullptr) return;
+	ULocalMultiplayerSubsystem* LocalMultiplayerSubsystem=GameInstance->GetSubsystem<ULocalMultiplayerSubsystem>();
+	if(LocalMultiplayerSubsystem == nullptr) return;
+	LocalMultiplayerSubsystem->CreateAndInitPlayer(ELocalMultiplayerInputMappingType::InGame);
 }
 
 
