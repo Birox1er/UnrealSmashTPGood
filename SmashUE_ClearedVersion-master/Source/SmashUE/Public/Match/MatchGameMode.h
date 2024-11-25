@@ -27,7 +27,6 @@ protected:
 private:
 	USmashCharacterInputData* LoadInputDataFromConfig();
 	UInputMappingContext* LoadInputMappingContextFromConfig();
-	void CreateAndInitPlayers();
 	void FindPlayerStartActorsInArena(TArray<AArenaPlayerStart*>&ResultActors);
 	void SpawnCharacter(const TArray<AArenaPlayerStart*>&SpawnPoints);
 	TSubclassOf<ASmashCharacter> GetSmashCharacterClassFromInputType(EAutoReceiveInput::Type InputType) const;

@@ -16,7 +16,7 @@ class LOCALMULTIPLAYER_API ULocalMultiplayerSubsystem : public UGameInstanceSubs
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	void CreateAndInitPlayer(ELocalMultiplayerInputMappingType MappingType);
+	void CreateAndInitPlayer(ELocalMultiplayerInputMappingType MappingType,bool IsGamepad,FKey Key,int ID);
 
 	int GetAssignedPlayerIndexFromKeyboardProfileIndex(int KeyboardProfileIndex);
 
@@ -37,5 +37,7 @@ protected:
 	TMap<int,int>PlayerIndexFromKeyboardProfileIndex;
 	UPROPERTY()
 	TMap<int,int>PlayerIndexFromGamepadProfileIndex;
+	UPROPERTY()
+	bool FirstInit=true;//voir le cpp 
 };
 	

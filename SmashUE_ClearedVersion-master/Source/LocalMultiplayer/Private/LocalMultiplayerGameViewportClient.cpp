@@ -34,9 +34,10 @@ bool ULocalMultiplayerGameViewportClient::InputKey(const FInputKeyEventArgs& Eve
 	{
 		 PlayerIndex = LocalMultiplayerSubsystem->GetAssignedPlayerIndexFromGamepadDeviceID(EventArgs.InputDevice.GetId());;
 	}
-	
 	if(PlayerIndex < 0)
 	{
+		GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Player index is invalid");
+		LocalMultiplayerSubsystem->CreateAndInitPlayer(ELocalMultiplayerInputMappingType::InGame,EventArgs.IsGamepad(),EventArgs.Key,EventArgs.InputDevice.GetId());
 		return false;
 	}
 	ULocalPlayer* LocalPlayer = GameInstance->GetLocalPlayerByIndex(PlayerIndex);

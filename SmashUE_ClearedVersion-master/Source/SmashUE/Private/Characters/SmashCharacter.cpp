@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "LocalMultiplayerSubsystem.h"
 #include "Camera/CameraWorldSubsystem.h"
 #include "Characters/SmashCharacterInputData.h"
 #include "Characters/SmashCharacterStateID.h"
@@ -34,15 +35,21 @@ void ASmashCharacter::BeginPlay()
 	GetWorld()->GetSubsystem<UCameraWorldSubsystem>()->AddFollowTarget(this);
 }
 
+
+
 // Called every frame
 void ASmashCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	TickStateMachine(DeltaTime);
 	MoveForward(DeltaTime);
-	if(FMath::Abs(OrientX)>=1)
+	if(OrientX>0.1)
 	{
-		SetLastOrientX(OrientX);
+	SetLastOrientX(1);
+	}
+	if(OrientX<0.1)
+	{
+		SetLastOrientX(-1);
 	}
 	RotateMeshUsingOrientX();
 	CurrentPos=GetActorLocation();
@@ -71,7 +78,7 @@ void ASmashCharacter::SetOrientX(float NewOrientX)
 
 void ASmashCharacter::SetLastOrientX(float NewOrientX)
 {
-	LastOrientX=OrientX;
+	LastOrientX=NewOrientX;
 }
 
 void ASmashCharacter::RotateMeshUsingOrientX() const

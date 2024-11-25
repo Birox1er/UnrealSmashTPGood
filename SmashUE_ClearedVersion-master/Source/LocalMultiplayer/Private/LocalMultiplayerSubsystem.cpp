@@ -5,23 +5,35 @@
 
 #include "EnhancedInputSubsystems.h"
 
-void ULocalMultiplayerSubsystem::CreateAndInitPlayer(ELocalMultiplayerInputMappingType MappingType)
+void ULocalMultiplayerSubsystem::CreateAndInitPlayer(ELocalMultiplayerInputMappingType MappingType,bool IsGamepad,FKey Key,int ID)
 {
+	if(FirstInit)//sinon ça créer un controler fantôme pour une raison obscure.
+	{
+		FirstInit=false;
+		return;
+	}
+	GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,FString::FromInt(LastAssignedPlayerIndex));
 	const ULocalMultiplayerSettings* Settings = GetDefault<ULocalMultiplayerSettings>();
 	if (!Settings)
 	{
 		return;
 	}
-
-	for (int i = 0; i < Settings->KeyboardProfilesData.Num(); ++i)
+	if(LastAssignedPlayerIndex>Settings->NbMaxPlayer)
 	{
-		AssignKeyboardMapping(AssignNewPlayerToKeyboardProfile(i),i,MappingType);
+		return;
 	}
-
-	for (int i = 0; i < Settings->NbMaxPlayer; ++i)
+	if(IsGamepad)
 	{
-		AssignGamepadInputMapping(AssignedNewPlayerToGamepadID(i),MappingType);
+		AssignGamepadInputMapping(AssignedNewPlayerToGamepadID(ID),MappingType);
 	}
+	else
+	{
+		int KeyboardProfileIndex=Settings->FindKeyboardProfileIndexFromKey(Key,MappingType);
+		int PlayerIndex=AssignNewPlayerToKeyboardProfile(KeyboardProfileIndex);
+		if(KeyboardProfileIndex<0)KeyboardProfileIndex=0;//check for something not sure what ?
+		AssignKeyboardMapping(PlayerIndex,KeyboardProfileIndex,MappingType);
+	}
+	LastAssignedPlayerIndex++;
 }
 
 int ULocalMultiplayerSubsystem::GetAssignedPlayerIndexFromKeyboardProfileIndex(int KeyboardProfileIndex)
@@ -40,10 +52,13 @@ int ULocalMultiplayerSubsystem::AssignNewPlayerToKeyboardProfile(int KeyboardPro
 	{
 		return-1;
 	}
+	if(KeyboardProfileIndex==-1&&LastAssignedPlayerIndex==0)
+	{
+		KeyboardProfileIndex=0;
+	}
 	PlayerIndexFromKeyboardProfileIndex.Add( KeyboardProfileIndex,LastAssignedPlayerIndex);
-	LastAssignedPlayerIndex++;
-	if(LastAssignedPlayerIndex >= Settings->KeyboardProfilesData.Num()) LastAssignedPlayerIndex = 0;
-	return PlayerIndexFromKeyboardProfileIndex[KeyboardProfileIndex];
+	return LastAssignedPlayerIndex; 
+	
 }
 
 void ULocalMultiplayerSubsystem::AssignKeyboardMapping(int PlayerIndex, int keyboardProfileIndex,
@@ -92,9 +107,7 @@ int ULocalMultiplayerSubsystem::AssignedNewPlayerToGamepadID(int DeviceIDDeviceI
 		return-1;
 	}
 	PlayerIndexFromGamepadProfileIndex.Add( DeviceIDDeviceID,LastAssignedPlayerIndex);
-	LastAssignedPlayerIndex++;
-	if(LastAssignedPlayerIndex >= Settings->NbMaxPlayer) LastAssignedPlayerIndex = 0;
-	return PlayerIndexFromGamepadProfileIndex[DeviceIDDeviceID];
+	return LastAssignedPlayerIndex;
 }
 
 void ULocalMultiplayerSubsystem::AssignGamepadInputMapping(int PlayerIndex,
@@ -106,36 +119,29 @@ void ULocalMultiplayerSubsystem::AssignGamepadInputMapping(int PlayerIndex,
 	{
 		return;
 	}
-
 	const FLocalMultiplayerProfileData& ProfileData = Settings->GamepadProfileData;
-
 	UInputMappingContext* IMC = ProfileData.GetIMCFromType(MappingType);
 	if (!IMC)
 	{
 		return;
 	}
-
 	UGameInstance* GameInstance = GetGameInstance();
 	ULocalPlayer* LocalPlayer = GameInstance->GetLocalPlayerByIndex(PlayerIndex);
-
 	if(LocalPlayer == nullptr)
 	{
 		FString OutError;
 		LocalPlayer = GameInstance->CreateLocalPlayer(PlayerIndex,  OutError, true);
 	}
-    
 	APlayerController* PlayerController = LocalPlayer->GetPlayerController(GameInstance->GetWorld());
 	if (!PlayerController)
 	{
 		return;
 	}
-
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = PlayerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	if (InputSubsystem == nullptr)
 	{
 		return;
 	}
-
 	InputSubsystem->AddMappingContext(IMC, 1);
-}
 
+}
