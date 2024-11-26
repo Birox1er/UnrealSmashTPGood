@@ -19,6 +19,8 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	UPROPERTY()
+	float EnergyBallFill=0;
 
 public:
 	// Called every frame

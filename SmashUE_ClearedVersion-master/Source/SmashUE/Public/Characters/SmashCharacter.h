@@ -122,4 +122,14 @@ public:
 private:
 	bool IsFollowable=true;
 #pragma endregion
+#pragma region Input Special
+public:
+	float GetInputSpecial() const;
+protected:
+	float InputSpecial=0.f;
+private:
+	void BindInputSpecialAction(UEnhancedInputComponent* EnhancedInputComponent);
+	void OnInputSpecial(const FInputActionValue& InputActionValue);
+	
+#pragma endregion 
 };

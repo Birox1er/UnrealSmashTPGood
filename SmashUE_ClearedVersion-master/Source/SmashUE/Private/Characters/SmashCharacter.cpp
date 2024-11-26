@@ -227,7 +227,7 @@ float ASmashCharacter::GetInputJump() const
 void ASmashCharacter::BindInputJump(UEnhancedInputComponent* EnhancedInputComponent)
 {
 	if(InputData==nullptr) return;
-	if(InputData->InputActionMoveX)
+	if(InputData->InputActionJump)
 	{
 		EnhancedInputComponent->BindAction(
 
@@ -269,3 +269,34 @@ bool ASmashCharacter::IsFollowing()
 {
 	return IsFollowable;
 }
+float ASmashCharacter::GetInputSpecial() const
+{
+	return InputSpecial;
+}
+void ASmashCharacter::BindInputSpecialAction(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	if(InputData==nullptr) return;
+	if(InputData->InputActionSpecial)
+	{
+		EnhancedInputComponent->BindAction(
+
+		InputData->InputActionSpecial,
+		ETriggerEvent::Started,
+		this,
+		&ASmashCharacter::OnInputJump
+		);
+		EnhancedInputComponent->BindAction(
+		InputData->InputActionSpecial,
+		ETriggerEvent::Completed,
+		this,
+		&ASmashCharacter::OnInputJump
+		);
+	}
+}
+void ASmashCharacter::OnInputSpecial(const FInputActionValue& InputActionValue)
+{
+	InputSpecial=InputActionValue.Get<float>();
+}
+
+
+

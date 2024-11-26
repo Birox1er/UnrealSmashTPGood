@@ -48,4 +48,9 @@ void USmashCharacterStateFall::StateTick(float DeltaTime)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
 	}
+	if(Character->GetInputSpecial()>Threshold)
+	{
+		Character->GetCharacterMovement()->Velocity=FVector(0, 0, 0);
+		StateMachine->ChangeState(ESmashCharacterStateID::NSpecial);
+	}
 }

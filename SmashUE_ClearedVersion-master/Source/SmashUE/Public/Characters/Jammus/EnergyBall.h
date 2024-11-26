@@ -14,10 +14,23 @@ class SMASHUE_API AEnergyBall : public AActor
 public:
 	// Sets default values for this actor's properties
 	AEnergyBall();
+	void SetOrientX(FVector Dir);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere)
+	float Damage=1.f;
+	UPROPERTY(EditAnywhere)
+	float Speed=800.f;
+	UPROPERTY(EditAnywhere)
+	float Range=800.f;
+	UPROPERTY()
+	FVector OrientX;
+	UPROPERTY()
+	FVector EjectionVector;
+	UPROPERTY(EditAnywhere)
+	float EjectionFactor;
 
 public:
 	// Called every frame
