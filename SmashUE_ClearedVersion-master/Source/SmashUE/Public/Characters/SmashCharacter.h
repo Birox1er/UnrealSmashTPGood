@@ -73,7 +73,6 @@ public:
 	UPROPERTY()
 	TObjectPtr<USmashCharacterInputData> InputData;
 protected:
-	void SetupInputMappingContextIntoController() const;
 #pragma endregion
 #pragma region Input Move X
 
@@ -131,5 +130,14 @@ private:
 	void BindInputSpecialAction(UEnhancedInputComponent* EnhancedInputComponent);
 	void OnInputSpecial(const FInputActionValue& InputActionValue);
 	
+#pragma endregion
+#pragma region Input Atk
+public:
+	float GetInputAtk() const;
+protected:
+	float InputAtk=0.f;
+private:
+	void BindInputAtk(UEnhancedInputComponent* EnhancedInputComponent);
+	void OnInputAtk(const FInputActionValue& InputActionValue);
 #pragma endregion 
 };

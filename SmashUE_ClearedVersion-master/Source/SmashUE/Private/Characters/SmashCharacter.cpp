@@ -12,7 +12,7 @@
 #include "LocalMultiplayerSubsystem.h"
 #include "Camera/CameraWorldSubsystem.h"
 #include "Characters/SmashCharacterInputData.h"
-#include "Characters/SmashCharacterStateID.h"
+#include "Characters/CommonStates/SmashCharacterStateID.h"
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnitConversion.h"
 #include "Slate/SGameLayerManager.h"
@@ -43,15 +43,19 @@ void ASmashCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	TickStateMachine(DeltaTime);
 	MoveForward(DeltaTime);
-	if(OrientX>0.1)
+	
+	if(GetCharacterMovement()->IsMovingOnGround())
 	{
-	SetLastOrientX(1);
+		if(OrientX>0.1)
+		{
+			SetLastOrientX(1);
+		}
+		if(OrientX<0.1)
+		{
+			SetLastOrientX(-1);
+		}
+		RotateMeshUsingOrientX();
 	}
-	if(OrientX<0.1)
-	{
-		SetLastOrientX(-1);
-	}
-	RotateMeshUsingOrientX();
 	CurrentPos=GetActorLocation();
 }
 
@@ -59,11 +63,12 @@ void ASmashCharacter::Tick(float DeltaTime)
 void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	SetupInputMappingContextIntoController();
+	//SetupInputMappingContextIntoController();
 	UEnhancedInputComponent* EnhancedInputComponent= Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComponent==nullptr)return;
 	BindInputMoveAxisAndAction(EnhancedInputComponent);
 	BindInputJump(EnhancedInputComponent);
+	BindInputAtk(EnhancedInputComponent);
 }
 
 float ASmashCharacter::GetOrientX() const
@@ -73,6 +78,7 @@ float ASmashCharacter::GetOrientX() const
 
 void ASmashCharacter::SetOrientX(float NewOrientX)
 {
+	
 	OrientX = NewOrientX;
 }
 
@@ -128,16 +134,6 @@ void ASmashCharacter::MoveForward(float DeltaTime)
 	else*/
 		AddMovementInput(GetActorForwardVector(),GetInputMoveX(),true);
 	
-}
-void ASmashCharacter::SetupInputMappingContextIntoController() const
-{
-	APlayerController* PlayerController = Cast<APlayerController>(Controller);
-	if(PlayerController==nullptr) return;
-	ULocalPlayer* Player = PlayerController->GetLocalPlayer();
-	if(Player==nullptr) return;
-	UEnhancedInputLocalPlayerSubsystem* InputSystem = Player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	if(InputSystem==nullptr) return;
-	InputSystem->AddMappingContext(InputMappingContext,0);
 }
 
 float ASmashCharacter::GetInputMoveX() const
@@ -217,11 +213,7 @@ void ASmashCharacter::OnInputMoveXFast(const FInputActionValue& InputActionValue
 
 float ASmashCharacter::GetInputJump() const
 {
-	if(!IsJumping)
-	{
-		return InputJump;
-	}
-	return 0;
+	return InputJump;
 }
 
 void ASmashCharacter::BindInputJump(UEnhancedInputComponent* EnhancedInputComponent)
@@ -283,19 +275,45 @@ void ASmashCharacter::BindInputSpecialAction(UEnhancedInputComponent* EnhancedIn
 		InputData->InputActionSpecial,
 		ETriggerEvent::Started,
 		this,
-		&ASmashCharacter::OnInputJump
+		&ASmashCharacter::OnInputSpecial
 		);
 		EnhancedInputComponent->BindAction(
 		InputData->InputActionSpecial,
 		ETriggerEvent::Completed,
 		this,
-		&ASmashCharacter::OnInputJump
+		&ASmashCharacter::OnInputSpecial
 		);
 	}
 }
 void ASmashCharacter::OnInputSpecial(const FInputActionValue& InputActionValue)
 {
 	InputSpecial=InputActionValue.Get<float>();
+}
+
+float ASmashCharacter::GetInputAtk() const
+{
+	return InputAtk;
+}
+
+void ASmashCharacter::BindInputAtk(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	EnhancedInputComponent->BindAction(
+	InputData->InputAtk,
+	ETriggerEvent::Started,
+	this,
+	&ASmashCharacter::OnInputAtk
+	);
+	EnhancedInputComponent->BindAction(
+	InputData->InputAtk,
+	ETriggerEvent::Completed,
+	this,
+	&ASmashCharacter::OnInputAtk
+	);
+}
+
+void ASmashCharacter::OnInputAtk(const FInputActionValue& InputActionValue)
+{
+	InputAtk=InputActionValue.Get<float>();
 }
 
 

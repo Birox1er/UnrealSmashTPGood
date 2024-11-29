@@ -17,6 +17,13 @@ ESmashCharacterStateID USmashJammusNSpecial::GetStateID()
 void USmashJammusNSpecial::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
+	//UEnergyBallContainer* Container=Character->GetComponents(UEnergyBallContainer)
+	if(FMath::Abs(Character->GetCharacterMovement()->Velocity.Z)>Threshold)
+	{
+		//Shoot
+		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
+	}
+
 }
 
 void USmashJammusNSpecial::StateExit(ESmashCharacterStateID NextStateID)
@@ -29,14 +36,9 @@ void USmashJammusNSpecial::StateTick(float DeltaTime)
 	Super::StateTick(DeltaTime);
 	if(Character->GetInputSpecial()<Threshold)
 	{
-		if(Character->GetCharacterMovement()->IsFalling())
-		{
-		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
-		}
-		else
-		{
-			StateMachine->ChangeState(ESmashCharacterStateID::Idle);
-		}
+
+	StateMachine->ChangeState(ESmashCharacterStateID::Idle);
+
 	}
 	//charge;
 }

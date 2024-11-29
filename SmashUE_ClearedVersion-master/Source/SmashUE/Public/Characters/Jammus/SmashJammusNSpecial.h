@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Characters/SmashCharacterState.h"
+#include "Characters/CommonStates/SmashCharacterState.h"
+#include "EnergyBallContainer.h"
 #include "SmashJammusNSpecial.generated.h"
 
 
