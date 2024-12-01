@@ -139,5 +139,16 @@ protected:
 private:
 	void BindInputAtk(UEnhancedInputComponent* EnhancedInputComponent);
 	void OnInputAtk(const FInputActionValue& InputActionValue);
-#pragma endregion 
+#pragma endregion
+#pragma region Taking Damage
+public:
+	float GetDamageAmount() const;
+	FVector GetEjectionVector() const;
+	void AddDamageAmount(float NewDamageAmount);
+	UFUNCTION(BlueprintCallable)
+	void OnDamageTaken(FVector NewEjectionVector,float Damage);
+protected:
+	float DamageTaken=0.f;
+	FVector EjectionVector=FVector(0, 0, 0);
+#pragma endregion
 };

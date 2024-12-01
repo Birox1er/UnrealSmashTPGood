@@ -19,5 +19,6 @@ enum class ESmashCharacterStateID : uint8
 	DAtk,
 	UAtk,
 	SideAtk,
-	DashAtk
+	DashAtk,
+	TakeDmg
 };

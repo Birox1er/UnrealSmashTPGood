@@ -316,5 +316,27 @@ void ASmashCharacter::OnInputAtk(const FInputActionValue& InputActionValue)
 	InputAtk=InputActionValue.Get<float>();
 }
 
+float ASmashCharacter::GetDamageAmount() const
+{
+	return DamageTaken;
+}
+
+FVector ASmashCharacter::GetEjectionVector() const
+{
+	return EjectionVector;
+}
+
+void ASmashCharacter::AddDamageAmount(float NewDamageAmount)
+{
+	DamageTaken+=NewDamageAmount;
+}
+
+void ASmashCharacter::OnDamageTaken(FVector NewEjectionVector,float Damage)
+{
+	AddDamageAmount(Damage);
+	EjectionVector=NewEjectionVector;
+	StateMachine->ChangeState(ESmashCharacterStateID::TakeDmg);
+}
+
 
 

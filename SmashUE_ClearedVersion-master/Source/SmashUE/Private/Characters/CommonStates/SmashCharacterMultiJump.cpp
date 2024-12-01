@@ -18,14 +18,10 @@ void USmashCharacterMultiJump::StateEnter(ESmashCharacterStateID PreviousStateID
 	Super::StateEnter(PreviousStateID);
 	if(Character->GetInputMoveX()*Character->GetOrientX()<0)
 	{
-		GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Jump Back");
-
 		Character->PlayAnimMontage(MontageBackJump);;
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Jump");
-
 		Character->PlayAnimMontage(Montage);;
 	}
 	Character->ChangeSpeed(	StateSpeed);

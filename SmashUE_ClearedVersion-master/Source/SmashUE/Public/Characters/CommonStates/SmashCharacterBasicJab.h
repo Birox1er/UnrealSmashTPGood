@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SmashCharacterState.h"
+#include "Components/SphereComponent.h"
 #include "SmashCharacterBasicJab.generated.h"
 
 
@@ -16,12 +17,24 @@ class SMASHUE_API USmashCharacterBasicJab : public USmashCharacterState
 	virtual void StateEnter(ESmashCharacterStateID PreviousStateID);
 	virtual void StateExit(ESmashCharacterStateID NextStateID);
 	virtual void StateTick(float DeltaTime);
+	void Jab1(float DeltaTime);
+	void Jab2(float DeltaTime);
+
 
 protected:
 	UPROPERTY()
 	float Duration;
 	UPROPERTY()
 	float CurrentTime;
+	UPROPERTY()
+	int CurrentJab=0;
 	UPROPERTY(EditAnywhere)
-	FString HitBoxTag; 
+	UAnimMontage* SecondJab;
+	UPROPERTY()
+	TArray<UPrimitiveComponent*> HitBoxesJab;
+	UPROPERTY(EditAnywhere)
+	FName HitBoxesJab1Tags;
+	UPROPERTY(EditAnywhere)
+	FName HitBoxesJab2Tags;
+
 };
