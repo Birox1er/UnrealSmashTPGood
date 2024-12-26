@@ -37,7 +37,7 @@ void USmashCharacterStateFall::StateTick(float DeltaTime)
 	}
 	else
 	{
-		Character->GetCharacterMovement()->GravityScale=FallAirControl;
+		Character->GetCharacterMovement()->GravityScale=FallGravityScale;
 	}
 	if(Character->GetVelocity().Z>-Threshold)
 	{

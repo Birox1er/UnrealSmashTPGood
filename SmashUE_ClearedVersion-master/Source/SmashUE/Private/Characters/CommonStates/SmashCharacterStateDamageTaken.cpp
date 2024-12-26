@@ -15,7 +15,9 @@ ESmashCharacterStateID USmashCharacterStateDamageTaken::GetStateID()
 void USmashCharacterStateDamageTaken::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-	Character->GetCharacterMovement()->GravityScale=Character->GetEjectionVector().Y*(1+Character->GetDamageAmount()/100)/(2*981);
+	float gScale=Character->GetEjectionVector().Z*(1+Character->GetDamageAmount()/100);
+	Character->GetCharacterMovement()->GravityScale=gScale/(2*981);
+	GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,FString::SanitizeFloat(gScale));
 	Timer=0;
 	TimerMult=Character->GetEjectionVector().Length();
 	Character->GetCharacterMovement()->Launch(Character->GetEjectionVector()*(1+Character->GetDamageAmount()/100));
@@ -25,7 +27,7 @@ void USmashCharacterStateDamageTaken::StateEnter(ESmashCharacterStateID Previous
 	}
 	else
 	{
-		Character->PlayAnimMontage(Montage);
+		Character->PlayAnimMontage(Montage, 1.f/(Character->GetDamageAmount()/100));
 	}
 }
 
@@ -41,17 +43,16 @@ void USmashCharacterStateDamageTaken::StateTick(float DeltaTime)
 	Timer+=DeltaTime;
 	if(Timer>1*TimerMult/500)
 	{
-		Character->GetCharacterMovement()->GravityScale=0;
-		if(!Character->GetCharacterMovement()->IsMovingOnGround())
+		Character->GetCharacterMovement()->GravityScale=3;
+		if(Character->GetVelocity().Z<-Threshold)
 		{
-			StateMachine->ChangeState(ESmashCharacterStateID::Fall);
-			GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Fall");
+				StateMachine->ChangeState(ESmashCharacterStateID::Fall);
+				GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Fall");
 		}
 		else
 		{
 			StateMachine->ChangeState(ESmashCharacterStateID::Idle);
 		}
 	}
-	
 }
 

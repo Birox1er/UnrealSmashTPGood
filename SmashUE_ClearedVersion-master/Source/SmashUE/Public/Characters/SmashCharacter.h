@@ -148,6 +148,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnDamageTaken(FVector NewEjectionVector,float Damage);
 protected:
+	UPROPERTY(EditAnywhere)
 	float DamageTaken=0.f;
 	FVector EjectionVector=FVector(0, 0, 0);
 #pragma endregion

@@ -50,87 +50,49 @@ void USmashCharacterBasicJab::StateEnter(ESmashCharacterStateID PreviousStateID)
 void USmashCharacterBasicJab::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
+	if(NextStateID!=ESmashCharacterStateID::NAtk||CurrentJab>1)
+	{
+		CurrentJab=0;
+	}
 }
 
 void USmashCharacterBasicJab::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
-	switch(CurrentJab)
+	CurrentTime+=DeltaTime;
+	if((CurrentTime<Duration*5/15&&CurrentJab==0||CurrentJab==1)&&(CurrentTime<Duration*8/27))
 	{
-		case 0:
-			Jab1(DeltaTime);
-		break;
-		case 1:
-			Jab2(DeltaTime);
-		break;
-		default: ;
+		return;
+	}
+	if((CurrentTime<Duration*10/15&&CurrentJab==0||CurrentJab==1)&&(CurrentTime<Duration*14/27))
+	{
+		for(UPrimitiveComponent* HitBox : HitBoxesJab)
+		{
+			HitBox->SetGenerateOverlapEvents(true);
+		}
+	}
+	else if(CurrentTime<Duration)
+	{
+		for(UPrimitiveComponent* HitBox : HitBoxesJab)
+		{
+			HitBox->SetGenerateOverlapEvents(false);
+		}
+	}
+	else if(CurrentTime<Duration+.2f&&Character->GetInputAtk()>Threshold)
+	{
+		if(Character->GetInputMoveY()>Threshold)
+		{
+			StateMachine->ChangeState(ESmashCharacterStateID::UAtk);
+		}
+		else
+		{
+			CurrentJab++;
+			StateMachine->ChangeState(ESmashCharacterStateID::NAtk);
+		}
+	}
+	else if(CurrentTime>Duration+.2f)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
 	}
 	
 }
-
-void USmashCharacterBasicJab::Jab2(float DeltaTime)
-{
-	CurrentTime+=DeltaTime;
-	if(CurrentTime<Duration*5/15)
-	{
-		return;
-	}
-	if(CurrentTime<Duration*10/15)
-	{
-		for(UPrimitiveComponent* HitBox : HitBoxesJab)
-		{
-			HitBox->SetGenerateOverlapEvents(true);
-		}
-	}
-	else if(CurrentTime<Duration)
-	{
-		for(UPrimitiveComponent* HitBox : HitBoxesJab)
-		{
-			HitBox->SetGenerateOverlapEvents(false);
-		}
-	}
-	else if(CurrentTime<Duration+.2f&&Character->GetInputAtk()>Threshold)
-	{
-		CurrentJab=0;
-		StateMachine->ChangeState(ESmashCharacterStateID::NAtk);
-	}
-	else if(CurrentTime>Duration+.2f)
-	{
-		CurrentJab=0;
-		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
-	}
-}
-
-void USmashCharacterBasicJab::Jab1(float DeltaTime)
-{
-	CurrentTime+=DeltaTime;
-	if(CurrentTime<Duration*5/15)
-	{
-		return;
-	}
-	if(CurrentTime<Duration*10/15)
-	{
-		for(UPrimitiveComponent* HitBox : HitBoxesJab)
-		{
-			HitBox->SetGenerateOverlapEvents(true);
-		}
-	}
-	else if(CurrentTime<Duration)
-	{
-		for(UPrimitiveComponent* HitBox : HitBoxesJab)
-		{
-			HitBox->SetGenerateOverlapEvents(false);
-		}
-	}
-	else if(CurrentTime<Duration+.2f&&Character->GetInputAtk()>Threshold)
-	{
-		CurrentJab++;
-		StateMachine->ChangeState(ESmashCharacterStateID::NAtk);
-	}
-	else if(CurrentTime>Duration+.2f)
-	{
-		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
-	}
-}
-
-
