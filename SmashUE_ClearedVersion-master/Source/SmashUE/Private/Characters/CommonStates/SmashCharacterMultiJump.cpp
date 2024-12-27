@@ -45,13 +45,15 @@ void USmashCharacterMultiJump::StateExit(ESmashCharacterStateID NextStateID)
 void USmashCharacterMultiJump::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
+	Character->MoveForward(DeltaTime);
 	Timer+=DeltaTime;
 	if(Timer>JumpDuration)
 	{
 		Character->StopJumping();
 	}
-	if(Character->GetVelocity().Z<-Threshold)
+	if(Character->GetVelocity().Z<-Threshold||Character->GetInputMoveY()<-Threshold)
 	{
+		Character->StopJumping();
 		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
 	}
 	if(Character->GetInputSpecial()>Threshold)

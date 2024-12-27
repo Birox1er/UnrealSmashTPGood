@@ -34,7 +34,9 @@ private:
 #pragma endregion
 #pragma region Orient
 public:
-	
+
+	bool CanReorient=true;
+
 	float GetOrientX() const;
 	void SetOrientX(float NewOrientX);
 	void SetLastOrientX(float NewOrientX);
@@ -55,10 +57,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<USmashCharacterStateMachine> StateMachine;
 	
-#pragma endregion
-#pragma region Animation
-public:
-	void ChangeAnimation(UAnimMontage* Anim,float I=1);
 #pragma endregion
 #pragma region Movement
 public:

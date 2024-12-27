@@ -17,7 +17,7 @@ ESmashCharacterStateID USmashCharacterStateJump::GetStateID()
 void USmashCharacterStateJump::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-	Character->ChangeAnimation(Montage,.5/JumpDuration);
+	Character->PlayAnimMontage(Montage,.5/JumpDuration);
 	Character->ChangeSpeed(	StateSpeed);
 	Character->GetCharacterMovement()->AirControl=JumpAirControl;
 	Character->IsJumping = true;
@@ -39,13 +39,19 @@ void USmashCharacterStateJump::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
 	Timer+=DeltaTime;
+	Character->MoveForward(DeltaTime);
 	if(Timer>JumpDuration)
 	{
 		Character->StopJumping();
 	}
-	if(Character->GetVelocity().Z<-Threshold)
+	if(Character->GetVelocity().Z<-Threshold||Character->GetInputMoveY()<-Threshold)
 	{
+		Character->StopJumping();
 		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
+	}
+	if(Character->GetInputJump()>Threshold)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Rejump);
 	}
 	if(Character->GetInputSpecial()>Threshold)
 	{

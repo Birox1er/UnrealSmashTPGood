@@ -22,7 +22,7 @@ void USmashCharacterStateIdle::StateEnter(ESmashCharacterStateID PreviousStateID
 {
 	Super::StateEnter(PreviousStateID);
 	Character->InputMoveXFastEvent.AddDynamic(this,&USmashCharacterStateIdle::OnInputMoveXFast);
-	Character->ChangeAnimation(Montage);
+	Character->PlayAnimMontage(Montage);
 	Character->ChangeSpeed(StateSpeed);
 }
 void USmashCharacterStateIdle::StateExit(ESmashCharacterStateID NextStateID)
@@ -57,6 +57,10 @@ void USmashCharacterStateIdle::StateTick(float DeltaTime)
 		{
 			GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Fall");
 			StateMachine->ChangeState(ESmashCharacterStateID::UAtk);
+		}
+		else if(Character->GetInputMoveY()<-Threshold)
+		{
+			StateMachine->ChangeState(ESmashCharacterStateID::DAtk);
 		}
 		else
 		{

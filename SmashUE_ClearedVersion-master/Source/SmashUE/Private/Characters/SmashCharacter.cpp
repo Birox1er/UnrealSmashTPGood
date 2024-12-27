@@ -42,9 +42,7 @@ void ASmashCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	TickStateMachine(DeltaTime);
-	MoveForward(DeltaTime);
-	
-	if(GetCharacterMovement()->IsMovingOnGround())
+	if(GetCharacterMovement()->IsMovingOnGround()&&CanReorient)
 	{
 		if(OrientX>0.1)
 		{
@@ -113,11 +111,6 @@ void ASmashCharacter::TickStateMachine(float DeltaTime) const
 	StateMachine->Tick(DeltaTime);
 }
 
-void ASmashCharacter::ChangeAnimation(UAnimMontage* Anim,float I)
-{
-		PlayAnimMontage(Anim,I);
-}
-
 void ASmashCharacter::ChangeSpeed(float NewSpeed)
 {
 	GetCharacterMovement()->MaxWalkSpeed=NewSpeed;
@@ -132,7 +125,7 @@ void ASmashCharacter::MoveForward(float DeltaTime)
 		SetActorLocation(CurrentLocation);
 	}
 	else*/
-		AddMovementInput(GetActorForwardVector(),GetInputMoveX(),true);
+	AddMovementInput(GetActorForwardVector(),GetInputMoveX(),true);
 	
 }
 

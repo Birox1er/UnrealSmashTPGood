@@ -41,12 +41,11 @@ void USmashCharacterStateDamageTaken::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
 	Timer+=DeltaTime;
-	if(Timer>1*TimerMult/500)
+	if(Timer>1*TimerMult/1000)
 	{
 		Character->GetCharacterMovement()->GravityScale=3;
 		if(Character->GetVelocity().Z<-Threshold)
 		{
-				StateMachine->ChangeState(ESmashCharacterStateID::Fall);
 				GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Fall");
 		}
 		else

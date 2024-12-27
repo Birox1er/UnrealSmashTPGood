@@ -17,7 +17,7 @@ void USmashCharacterStateFall::StateEnter(ESmashCharacterStateID PreviousStateID
 {
 	Super::StateEnter(PreviousStateID);
 	Character->ChangeSpeed(StateSpeed*FallAirControl);
-	Character->ChangeAnimation(Montage);
+	Character->PlayAnimMontage(Montage);
 	Character->GetCharacterMovement()->GravityScale=FallGravityScale;
 	Character->GetCharacterMovement()->AirControl=FallAirControl;
 
@@ -31,6 +31,7 @@ void USmashCharacterStateFall::StateExit(ESmashCharacterStateID NextStateID)
 void USmashCharacterStateFall::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
+	Character->MoveForward(DeltaTime);
 	if(Character->GetInputMoveY()<-Threshold)
 	{
 		Character->GetCharacterMovement()->GravityScale=FallFastGravityScale;

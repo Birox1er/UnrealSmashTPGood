@@ -15,7 +15,7 @@ ESmashCharacterStateID USmashCharacterStateRun::GetStateID()
 void USmashCharacterStateRun::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-	Character->ChangeAnimation(Montage);
+	Character->PlayAnimMontage(Montage);
 	Character->ChangeSpeed(StateSpeed);
 
 }
@@ -29,6 +29,7 @@ void USmashCharacterStateRun::StateExit(ESmashCharacterStateID NextStateID)
 void USmashCharacterStateRun::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
+	Character->MoveForward(DeltaTime);
 	if(FMath::Abs(Character->GetInputMoveX())< Threshold)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
@@ -44,6 +45,21 @@ void USmashCharacterStateRun::StateTick(float DeltaTime)
 	if(Character->GetVelocity().Z<-Threshold)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
+	}
+	if(Character->GetInputAtk()>Threshold)
+	{
+		if(Character->GetInputMoveY()>Threshold)
+		{
+			StateMachine->ChangeState(ESmashCharacterStateID::UAtk);
+		}
+		else if(Character->GetInputMoveY()<-Threshold)
+		{
+			StateMachine->ChangeState(ESmashCharacterStateID::DAtk);
+		}
+		else
+		{
+			StateMachine->ChangeState(ESmashCharacterStateID::DashAtk);
+		}
 	}
 }
 

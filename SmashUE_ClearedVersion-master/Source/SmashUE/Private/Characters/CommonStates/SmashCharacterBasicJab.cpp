@@ -60,11 +60,11 @@ void USmashCharacterBasicJab::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
 	CurrentTime+=DeltaTime;
-	if((CurrentTime<Duration*5/15&&CurrentJab==0||CurrentJab==1)&&(CurrentTime<Duration*8/27))
+	if((CurrentTime<Duration*5/15&&CurrentJab==0||CurrentJab==1)&&(CurrentTime<Duration*10/26))
 	{
 		return;
 	}
-	if((CurrentTime<Duration*10/15&&CurrentJab==0||CurrentJab==1)&&(CurrentTime<Duration*14/27))
+	if((CurrentTime<Duration*10/15&&CurrentJab==0||CurrentJab==1)&&(CurrentTime<Duration*16/26))
 	{
 		for(UPrimitiveComponent* HitBox : HitBoxesJab)
 		{
@@ -77,20 +77,24 @@ void USmashCharacterBasicJab::StateTick(float DeltaTime)
 		{
 			HitBox->SetGenerateOverlapEvents(false);
 		}
-	}
-	else if(CurrentTime<Duration+.2f&&Character->GetInputAtk()>Threshold)
-	{
-		if(Character->GetInputMoveY()>Threshold)
+		if(Character->GetInputAtk()>Threshold)
 		{
-			StateMachine->ChangeState(ESmashCharacterStateID::UAtk);
-		}
-		else
-		{
-			CurrentJab++;
-			StateMachine->ChangeState(ESmashCharacterStateID::NAtk);
+			if(Character->GetInputMoveY()>Threshold)
+			{
+				StateMachine->ChangeState(ESmashCharacterStateID::UAtk);
+			}
+			else if(Character->GetInputMoveY()<-Threshold)
+			{
+				StateMachine->ChangeState(ESmashCharacterStateID::DAtk);
+			}
+			else
+			{
+				CurrentJab++;
+				StateMachine->ChangeState(ESmashCharacterStateID::NAtk);
+			}
 		}
 	}
-	else if(CurrentTime>Duration+.2f)
+	else
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
 	}

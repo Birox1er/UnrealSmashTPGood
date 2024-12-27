@@ -1,34 +1,31 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/CommonStates/SmashCharacterStateUpTilt.h"
+#include "Characters/CommonStates/SmashCharacterStateTilt.h"
 
 #include "Characters/SmashCharacter.h"
 #include "Characters/SmashCharacterStateMachine.h"
 #include "Components/SphereComponent.h"
 
-
-ESmashCharacterStateID USmashCharacterStateUpTilt::GetStateID()
+ESmashCharacterStateID USmashCharacterStateTilt::GetStateID()
 {
-	return ESmashCharacterStateID::UAtk;
-}
+return ESmashCharacterStateID::SideAtk;}
 
-void USmashCharacterStateUpTilt::StateEnter(ESmashCharacterStateID PreviousStateID)
+void USmashCharacterStateTilt::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
 	for(UActorComponent* Comp : Character->GetComponents())
 	{
-		if(Comp->ComponentHasTag(HitBoxesUpTiltTags))
+		if(Comp->ComponentHasTag(HitBoxesTiltTags))
 		{
 			HitBoxesUpTilt.Add(Cast<USphereComponent>(Comp));
 		}
 	}
 	CurrentTime=0;
 	Duration=Character->PlayAnimMontage(Montage);
-
 }
 
-void USmashCharacterStateUpTilt::StateExit(ESmashCharacterStateID NextStateID)
+void USmashCharacterStateTilt::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 	for(UPrimitiveComponent* HitBox : HitBoxesUpTilt)
@@ -37,9 +34,8 @@ void USmashCharacterStateUpTilt::StateExit(ESmashCharacterStateID NextStateID)
 	}
 }
 
-void USmashCharacterStateUpTilt::StateTick(float DeltaTime)
-{
-	Super::StateTick(DeltaTime);
+void USmashCharacterStateTilt::StateTick(float DeltaTime)
+{Super::StateTick(DeltaTime);
 	CurrentTime+=DeltaTime;
 	if(CurrentTime<Duration*520/1774)
 	{
@@ -71,7 +67,7 @@ void USmashCharacterStateUpTilt::StateTick(float DeltaTime)
 		}
 		else
 		{
-			StateMachine->ChangeState(ESmashCharacterStateID::NAtk);
+			StateMachine->ChangeState(ESmashCharacterStateID::SideAtk);
 		}
 	}
 	else if(CurrentTime>Duration+.2f)

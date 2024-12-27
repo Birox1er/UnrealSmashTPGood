@@ -15,7 +15,7 @@ ESmashCharacterStateID USmashCharacterStateWalk::GetStateID()
 void USmashCharacterStateWalk::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-	Character->ChangeAnimation(Montage);
+	Character->PlayAnimMontage(Montage);
 	Character->ChangeSpeed(StateSpeed);
 	Character->InputMoveXFastEvent.AddDynamic(this,&USmashCharacterStateWalk::OnInputMoveXFast);
 
@@ -35,7 +35,7 @@ void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 void USmashCharacterStateWalk::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
-	
+	Character->MoveForward(DeltaTime);
 	if(FMath::Abs(Character->GetInputMoveX())< Threshold)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
@@ -51,5 +51,17 @@ void USmashCharacterStateWalk::StateTick(float DeltaTime)
 	if(Character->GetVelocity().Z<-Threshold)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
+	}
+	if(Character->GetInputAtk()>Threshold)
+	{
+		if(Character->GetInputMoveY()>Threshold)
+		{
+			GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Fall");
+			StateMachine->ChangeState(ESmashCharacterStateID::UAtk);
+		}
+		else
+		{
+			StateMachine->ChangeState(ESmashCharacterStateID::SideAtk);
+		}
 	}
 }
