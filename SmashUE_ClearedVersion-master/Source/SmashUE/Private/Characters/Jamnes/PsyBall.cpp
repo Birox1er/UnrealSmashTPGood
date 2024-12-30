@@ -3,6 +3,8 @@
 
 #include "Characters/Jamnes/PsyBall.h"
 
+#include "Misc/MapErrors.h"
+
 
 // Sets default values
 APsyBall::APsyBall()
@@ -15,6 +17,7 @@ APsyBall::APsyBall()
 void APsyBall::BeginPlay()
 {
 	Super::BeginPlay();
+	Mesh=FindComponentByTag<UStaticMeshComponent>("PsyBall");
 }
 
 // Called every frame
@@ -24,9 +27,11 @@ void APsyBall::Tick(float DeltaTime)
 }
 void APsyBall::MovePsyBallX(float Dir,float Speed,float DeltaTime)
 {
-	FVector CurrentLocation=this->GetActorLocation();
-	CurrentLocation.X+=DeltaTime*Dir*Speed*100;
-	SetActorLocation(CurrentLocation);
+	if(Mesh!=nullptr)
+	{
+		FVector ImpulseVector = FVector(1*Dir*Speed*DeltaTime*1000,0,0);
+		Mesh->AddImpulse(ImpulseVector);
+	}
 }
 
 void APsyBall::SetNess(ASmashCharacter* ThisNess)

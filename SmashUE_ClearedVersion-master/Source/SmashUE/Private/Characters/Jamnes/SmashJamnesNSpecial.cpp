@@ -43,6 +43,7 @@ void USmashJamnesNSpecial::StateTick(float DeltaTime)
 	}
 	else if(abs(Character->GetInputMoveX())>Threshold)
 	{
+		GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"SmashJamnesNSpecial::StateTick");
 		PsyBall->MovePsyBallX(Character->GetInputMoveX(),30,DeltaTime);
 	}
 }

@@ -23,6 +23,8 @@ protected:
 	float PsyBallSpeed=30.f;
 	UPROPERTY(EditAnywhere)
 	float PsyBallRadius=10.f;
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* Mesh=nullptr;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	ASmashCharacter* Ness=nullptr;
 public:
