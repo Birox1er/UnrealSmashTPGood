@@ -18,7 +18,7 @@ void USmashCharacterStateTilt::StateEnter(ESmashCharacterStateID PreviousStateID
 	{
 		if(Comp->ComponentHasTag(HitBoxesTiltTags))
 		{
-			HitBoxesUpTilt.Add(Cast<USphereComponent>(Comp));
+			HitBoxesTilt.Add(Cast<USphereComponent>(Comp));
 		}
 	}
 	CurrentTime=0;
@@ -28,7 +28,7 @@ void USmashCharacterStateTilt::StateEnter(ESmashCharacterStateID PreviousStateID
 void USmashCharacterStateTilt::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
-	for(UPrimitiveComponent* HitBox : HitBoxesUpTilt)
+	for(UPrimitiveComponent* HitBox : HitBoxesTilt)
 	{
 		HitBox->SetGenerateOverlapEvents(false);
 	}
@@ -43,14 +43,14 @@ void USmashCharacterStateTilt::StateTick(float DeltaTime)
 	}
 	if(CurrentTime<Duration*760/1774)
 	{
-		for(UPrimitiveComponent* HitBox : HitBoxesUpTilt)
+		for(UPrimitiveComponent* HitBox : HitBoxesTilt)
 		{
 			HitBox->SetGenerateOverlapEvents(true);
 		}
 	}
 	else if(CurrentTime<Duration*1448/1774)
 	{
-		for(UPrimitiveComponent* HitBox : HitBoxesUpTilt)
+		for(UPrimitiveComponent* HitBox : HitBoxesTilt)
 		{
 			HitBox->SetGenerateOverlapEvents(false);
 		}

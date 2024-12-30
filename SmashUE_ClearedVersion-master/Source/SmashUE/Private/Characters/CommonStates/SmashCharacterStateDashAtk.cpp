@@ -37,7 +37,14 @@ void USmashCharacterStateDashAtk::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 	Character->CanReorient=true;
-
+	for(UPrimitiveComponent* HitBox : HitBoxesDashAtk)
+	{
+		HitBox->SetGenerateOverlapEvents(false);
+	}
+	for(UPrimitiveComponent* HitBox : HitBoxesDashAtk2)
+	{
+		HitBox->SetGenerateOverlapEvents(true);
+	}
 }
 
 void USmashCharacterStateDashAtk::StateTick(float DeltaTime)

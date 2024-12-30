@@ -27,5 +27,8 @@ protected:
 	TSubclassOf<APsyBall> PsyBallClass;
 	UPROPERTY(EditAnywhere)
 	float MaxDuration=2.f;
-	float timer;
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* ReleaseMontage;
+	float Timer;
+	float EndTimer;
 };

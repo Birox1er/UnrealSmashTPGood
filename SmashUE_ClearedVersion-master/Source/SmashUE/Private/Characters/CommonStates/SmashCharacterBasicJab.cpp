@@ -54,17 +54,21 @@ void USmashCharacterBasicJab::StateExit(ESmashCharacterStateID NextStateID)
 	{
 		CurrentJab=0;
 	}
+	for(UPrimitiveComponent* HitBox : HitBoxesJab)
+	{
+		HitBox->SetGenerateOverlapEvents(true);
+	}
 }
 
 void USmashCharacterBasicJab::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
 	CurrentTime+=DeltaTime;
-	if((CurrentTime<Duration*5/15&&CurrentJab==0||CurrentJab==1)&&(CurrentTime<Duration*10/26))
+	if((CurrentTime<Duration*5/15&&CurrentJab==0)||(CurrentJab==1&&CurrentTime<Duration*10/26))
 	{
 		return;
 	}
-	if((CurrentTime<Duration*10/15&&CurrentJab==0||CurrentJab==1)&&(CurrentTime<Duration*16/26))
+	if((CurrentTime<Duration*10/15&&CurrentJab==0)||(CurrentJab==1&&CurrentTime<Duration*16/26))
 	{
 		for(UPrimitiveComponent* HitBox : HitBoxesJab)
 		{

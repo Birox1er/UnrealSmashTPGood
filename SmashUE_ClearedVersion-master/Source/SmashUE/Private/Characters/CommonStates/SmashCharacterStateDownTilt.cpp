@@ -30,6 +30,10 @@ void USmashCharacterStateDownTilt::StateEnter(ESmashCharacterStateID PreviousSta
 void USmashCharacterStateDownTilt::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
+	for(UPrimitiveComponent* HitBox : HitBoxesDownTilt)
+	{
+		HitBox->SetGenerateOverlapEvents(false);
+	}
 }
 
 void USmashCharacterStateDownTilt::StateTick(float DeltaTime)

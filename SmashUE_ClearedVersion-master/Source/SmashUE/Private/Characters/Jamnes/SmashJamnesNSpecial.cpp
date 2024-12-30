@@ -17,7 +17,9 @@ void USmashJamnesNSpecial::StateEnter(ESmashCharacterStateID PreviousStateID)
 	Super::StateEnter(PreviousStateID);
 	
 	PsyBall=GetWorld()->SpawnActor<APsyBall>(PsyBallClass,Character->GetActorLocation(), Character->GetActorRotation());
-	timer=0;;
+	Timer=0;
+	EndTimer=0;
+	Character->PlayAnimMontage(Montage);
 }
 
 void USmashJamnesNSpecial::StateExit(ESmashCharacterStateID NextStateID)
@@ -28,22 +30,23 @@ void USmashJamnesNSpecial::StateExit(ESmashCharacterStateID NextStateID)
 void USmashJamnesNSpecial::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
-	timer+=DeltaTime;
-	if(timer>MaxDuration||Character->GetInputSpecial()<Threshold)
+	Timer+=DeltaTime;
+	if(Timer>MaxDuration||Character->GetInputSpecial()<Threshold)
 	{
-		if(PsyBall!=nullptr)
+		if(PsyBall!=nullptr&&EndTimer!=0)
 		{
+			EndTimer=Timer;
+			Character->StopAnimMontage(Montage);
+			Character->PlayAnimMontage(ReleaseMontage);
 			PsyBall->OnExplode();
-
 		}
-		if(timer>MaxDuration+1.5)
+		if(Timer>EndTimer+1.5f)
 		{
 			StateMachine->ChangeState(ESmashCharacterStateID::Idle);
 		}
 	}
 	else if(abs(Character->GetInputMoveX())>Threshold)
 	{
-		GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"SmashJamnesNSpecial::StateTick");
 		PsyBall->MovePsyBallX(Character->GetInputMoveX(),30,DeltaTime);
 	}
 }

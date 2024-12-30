@@ -27,7 +27,7 @@ protected:
 	UPROPERTY()
 	float CurrentTime;
 	UPROPERTY()
-	TArray<UPrimitiveComponent*> HitBoxesUpTilt;
+	TArray<UPrimitiveComponent*> HitBoxesTilt;
 	UPROPERTY(EditAnywhere)
 	FName HitBoxesTiltTags;
 };
