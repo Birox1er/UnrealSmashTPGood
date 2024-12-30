@@ -21,6 +21,11 @@ public:
 	virtual void StateTick(float DeltaTime) override;
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	APsyBall* PsyBall;
+	UPROPERTY(EditDefaultsOnly, Category = "Ness Projectile")
+	TSubclassOf<APsyBall> PsyBallClass;
+	UPROPERTY(EditAnywhere)
+	float MaxDuration=2.f;
+	float timer;
 };

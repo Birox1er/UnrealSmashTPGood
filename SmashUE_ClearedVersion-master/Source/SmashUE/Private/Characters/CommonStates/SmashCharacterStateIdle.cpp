@@ -55,7 +55,6 @@ void USmashCharacterStateIdle::StateTick(float DeltaTime)
 	{
 		if(Character->GetInputMoveY()>Threshold)
 		{
-			GEngine->AddOnScreenDebugMessage(1,1,FColor::Red,"Fall");
 			StateMachine->ChangeState(ESmashCharacterStateID::UAtk);
 		}
 		else if(Character->GetInputMoveY()<-Threshold)

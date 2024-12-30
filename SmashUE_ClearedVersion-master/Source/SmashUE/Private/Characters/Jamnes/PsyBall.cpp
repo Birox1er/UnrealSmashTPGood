@@ -15,7 +15,6 @@ APsyBall::APsyBall()
 void APsyBall::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -23,13 +22,16 @@ void APsyBall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-void APsyBall::Explode()
+void APsyBall::MovePsyBallX(float Dir,float Speed,float DeltaTime)
 {
-	
+	FVector CurrentLocation=this->GetActorLocation();
+	CurrentLocation.X+=DeltaTime*Dir*Speed*100;
+	SetActorLocation(CurrentLocation);
 }
-void APsyBall::MovePsyBall()
+
+void APsyBall::SetNess(ASmashCharacter* ThisNess)
 {
-	
+	Ness=ThisNess;
 }
 
 

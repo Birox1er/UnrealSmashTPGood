@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Characters/SmashCharacter.h"
 #include "GameFramework/Actor.h"
 #include "PsyBall.generated.h"
 
@@ -22,10 +23,13 @@ protected:
 	float PsyBallSpeed=30.f;
 	UPROPERTY(EditAnywhere)
 	float PsyBallRadius=10.f;
-
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	ASmashCharacter* Ness=nullptr;
 public:
-	// Called every frame
+	// Called every frames
 	virtual void Tick(float DeltaTime) override;
-	void Explode();
-	void MovePsyBall();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnExplode();
+	void MovePsyBallX(float Dir,float Speed,float DeltaTime);
+	void SetNess(ASmashCharacter* ThisNess);
 };

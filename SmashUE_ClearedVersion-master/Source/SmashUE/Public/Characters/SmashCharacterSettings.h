@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
 #include "InputMappingContext.h"
+#include "Jamnes/PsyBall.h"
 #include "SmashCharacterSettings.generated.h"
 class USmashCharacterInputData;
 

@@ -67,6 +67,7 @@ void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	BindInputMoveAxisAndAction(EnhancedInputComponent);
 	BindInputJump(EnhancedInputComponent);
 	BindInputAtk(EnhancedInputComponent);
+	BindInputSpecialAction(EnhancedInputComponent);
 }
 
 float ASmashCharacter::GetOrientX() const
