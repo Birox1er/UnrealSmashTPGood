@@ -27,9 +27,9 @@ void APsyBall::Tick(float DeltaTime)
 }
 void APsyBall::MovePsyBallX(float Dir,float Speed,float DeltaTime)
 {
-	if(Mesh!=nullptr)
+	if(Mesh!=nullptr&&CanMove)
 	{
-		FVector ImpulseVector = FVector(1*Dir*Speed*DeltaTime*1000,0,0);
+		FVector ImpulseVector = FVector(1*Dir*Speed*DeltaTime*2,0,0);
 		Mesh->AddImpulse(ImpulseVector);
 	}
 }

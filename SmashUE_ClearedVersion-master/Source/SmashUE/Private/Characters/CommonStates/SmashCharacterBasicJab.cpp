@@ -56,7 +56,7 @@ void USmashCharacterBasicJab::StateExit(ESmashCharacterStateID NextStateID)
 	}
 	for(UPrimitiveComponent* HitBox : HitBoxesJab)
 	{
-		HitBox->SetGenerateOverlapEvents(true);
+		HitBox->SetGenerateOverlapEvents(false);
 	}
 }
 

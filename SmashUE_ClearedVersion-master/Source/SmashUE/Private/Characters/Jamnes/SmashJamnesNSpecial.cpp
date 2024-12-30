@@ -33,7 +33,7 @@ void USmashJamnesNSpecial::StateTick(float DeltaTime)
 	Timer+=DeltaTime;
 	if(Timer>MaxDuration||Character->GetInputSpecial()<Threshold)
 	{
-		if(PsyBall!=nullptr&&EndTimer!=0)
+		if(PsyBall!=nullptr&&EndTimer==0)
 		{
 			EndTimer=Timer;
 			Character->StopAnimMontage(Montage);
